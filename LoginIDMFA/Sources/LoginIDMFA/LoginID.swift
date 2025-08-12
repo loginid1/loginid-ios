@@ -10,6 +10,7 @@ import LoginIDAPIClient
 
 public class LoginID: NSObject {
     private let trustId: TrustIDManaging
+    private let session: SessionManaging
     private let config: LoginIDConfig
     private let store: MFAStore
     private let mfa: MFA
@@ -19,7 +20,10 @@ public class LoginID: NSObject {
         
         OpenAPIClientAPIConfiguration.shared.basePath = baseUrl
         
-        store = MFAStore(appId: config.getAppIdOrEmpty())
+        let appId = config.getAppIdOrEmpty()
+        
+        store = MFAStore(appId: appId)
+        session = SessionManager(appId: appId)
         trustId = TrustID()
         mfa = MFA(config: config, store: store, trustId: trustId)
     }
@@ -27,7 +31,10 @@ public class LoginID: NSObject {
     public init(config: LoginIDConfig) {
         self.config = config
         
-        store = MFAStore(appId: config.getAppIdOrEmpty())
+        let appId = config.getAppIdOrEmpty()
+        
+        store = MFAStore(appId: appId)
+        session = SessionManager(appId: appId)
         trustId = TrustID()
         mfa = MFA(config: config, store: store, trustId: trustId)
     }

@@ -35,4 +35,12 @@ final class BeginFlowOptionDefaults {
     var traceId: String? {
         return options?.traceId
     }
+    
+    var user: User {
+        return User(
+            displayName: displayName,
+            username: username,
+            usernameType: usernameType,
+        )
+    }
 }
