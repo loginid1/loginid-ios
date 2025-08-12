@@ -1,0 +1,16 @@
+{
+  "name": "openapi-gen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "rm -fr ../LoginID/LoginIDAPIClients && node pre_openapi_gen.mjs && openapi-generator-cli generate -i mod-openapi.yaml -g swift6 --additional-properties=responseAs=AsyncAwait,swiftPackagePath=LoginIDAPIClients,objcCompatible -o ../LoginID/generated && mv ../LoginID/generated/LoginIDAPIClients  ../LoginIDMFA/Sources/LoginIDAPIClient && rm -fr ../LoginIDMFA/Soruces/generated"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.21.4",
+    "js-yaml": "^4.1.0"
+  }
+}
