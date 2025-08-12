@@ -11,7 +11,7 @@ import LoginIDAPIClient
 ///
 /// This structure is used to track the status of an ongoing MFA process, including
 /// remaining factors, user details, and issued authentication tokens.
-public struct MfaSessionResult {
+public struct MFASessionResult {
     /// The MFA flow type indicating whether the session is part of sign-in or sign-up.
     /// This helps differentiate between authentication scenarios.
     let flow: MfaNext.Flow?

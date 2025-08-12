@@ -43,7 +43,7 @@ public class LoginID: NSObject {
         username: String,
         //NOTE: replace username with displayName is specified
         options: BeginFlowOptions?,
-    ) async throws -> MfaSessionResult {
+    ) async throws -> MFASessionResult {
         return try await TaskHandler.executeTask {
             try await self.mfa.beginFlow(username: username, options: options)
         }

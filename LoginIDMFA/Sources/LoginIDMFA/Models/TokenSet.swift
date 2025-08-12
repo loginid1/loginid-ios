@@ -35,6 +35,13 @@ public struct TokenSet : Codable {
         return try decoder.decode(TokenSet.self, from: data)
     }
     
+    public init(result: Mfa) {
+        self.idToken = result.idToken
+        self.accessToken = result.accessToken
+        self.refreshToken = result.refreshToken
+        self.payloadSignature = result.payloadSignature
+    }
+    
     /// Encodes the `TokenSet` instance into JSON data.
     /// - Throws: An error if encoding fails.
     /// - Returns: Encoded JSON data.

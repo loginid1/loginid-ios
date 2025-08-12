@@ -28,7 +28,7 @@ final class MFA {
     public func beginFlow(
         username: String,
         options: BeginFlowOptions?
-    ) async throws -> MfaSessionResult {
+    ) async throws -> MFASessionResult {
         let appId = try config.getAppId()
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
@@ -58,10 +58,10 @@ final class MFA {
         
         let info = MFAInfo(result: mfaNextResult, username: username)
         
-        store.storeMFAInfo(info)
         session.logout()
+        store.storeMFAInfo(info)
         
-        return MfaSessionResult(info: info, tokenSet: nil)
+        return MFASessionResult(info: info, tokenSet: nil)
     }
     
     public func performAction(
@@ -71,5 +71,53 @@ final class MFA {
         let appId = try config.getAppId()
         let info = store.getMFAInfo()
         let values = try MFAValidator.actionValidator(action: action, info: info, options: options)
+        
+        switch action {
+        case .passkeyReg, .passkeyAuth, .passkeyTx:
+            print("wow")
+        case .external:
+            print("")
+        default:
+            print("thing")
+        }
+    }
+    
+    private func invokeMfaApi(
+        appId: String,
+        username: String?,
+        _ fn: () async throws -> Mfa
+    ) async throws -> MFASessionResult {
+        do {
+            let performActionResult = try await fn()
+            let info = store.getMFAInfo()
+            let successInfo = MFAInfo(username: username, flow: info?.flow)
+            let tokenSet = TokenSet(result: performActionResult)
+            
+            store.storeMFAInfo(successInfo)
+            store.storeDeviceId(performActionResult.deviceId)
+            session.setTokenSet(tokenSet)
+            
+            return MFASessionResult(info: info, tokenSet: tokenSet)
+        } catch let ErrorResponse.error(status, data, urlResponse, underlying)  {
+            if status == 401,
+               let data = data,
+               let result = try? JSONCoding.decoder().decode(MfaNext.self, from: data),
+               let session = result.session
+            {
+                let current = store.getMFAInfo()
+                let info = MFAInfo(result: result, username: username)
+                
+                store.storeMFAInfo(info)
+                
+                return MFASessionResult(info: info, tokenSet: nil)
+            }
+            
+            //TODO: Add client-events here after if it got here which means true error
+            
+            // Rethrow same error. Global TaskHandler should catch it.
+            throw ErrorResponse.error(status, data, nil, underlying)
+        } catch {
+            throw error
+        }
     }
 }
