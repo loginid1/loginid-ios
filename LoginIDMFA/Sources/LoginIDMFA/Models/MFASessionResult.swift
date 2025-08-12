@@ -18,7 +18,7 @@ public struct MfaSessionResult {
     
     /// List of MFA factors that still need to be completed for authentication.
     /// If this list is empty, the authentication process is complete.
-    let remainingFactors: [RemainingFactor]
+    let remainingFactors: [RemainingAction]
     
     /// The username associated with the authentication session.
     /// This may be `nil` if not provided or applicable.
@@ -92,7 +92,7 @@ public struct MfaSessionResult {
                 }
             }()
 
-            return RemainingFactor(
+            return RemainingAction(
                 type: action.name,
                 label: action.label,
                 description: action.desc,

@@ -1,0 +1,44 @@
+//
+//  PerformActionOptions.swift
+//  LoginIDMFA
+//
+//  Created by Michael Braga on 2025-08-12.
+//
+
+/// Options for performing an MFA (Multi-Factor Authentication) factor.
+public struct PerformActionOptions {
+    /// The MFA state session.
+    ///
+    /// This should be obtained from a previous MFA request or initiation step.
+    public let session: String?
+    
+    /// The payload required for completing the authentication factor.
+    ///
+    /// This typically contains user input or challenge-response data.
+    public let payload: String?
+    
+    /// Enables passkey support in browser autofill suggestions (conditional UI), if supported.
+    public let autoFill: Bool?
+    
+    /// A human-palatable name for the user account, intended only for display on your passkeys.
+    public let displayName: String?
+    
+    /// Creates a new instance of `MfaPerformActionOptions`.
+    ///
+    /// - Parameters:
+    ///   - session: The MFA state session obtained from a previous MFA step.
+    ///   - payload: Data required to complete the authentication factor.
+    ///   - autoFill: Whether to enable passkey support in browser autofill suggestions.
+    ///   - displayName: A user-friendly account name to display on passkeys.
+    public init(
+        session: String? = nil,
+        payload: String? = nil,
+        autoFill: Bool? = nil,
+        displayName: String? = nil
+    ) {
+        self.session = session
+        self.payload = payload
+        self.autoFill = autoFill
+        self.displayName = displayName
+    }
+}

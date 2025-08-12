@@ -59,9 +59,17 @@ final class MFA {
         let info = MFAInfo(result: mfaNextResult, username: username)
         
         store.storeMFAInfo(info)
-        
         session.logout()
         
         return MfaSessionResult(info: info, tokenSet: nil)
+    }
+    
+    public func performAction(
+        action: MfaActionAction.Name,
+        options: PerformActionOptions?,
+    ) async throws -> Void {
+        let appId = try config.getAppId()
+        let info = store.getMFAInfo()
+        let values = try MFAValidator.actionValidator(action: action, info: info, options: options)
     }
 }

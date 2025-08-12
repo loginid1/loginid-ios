@@ -8,7 +8,7 @@
 import LoginIDAPIClient
 
 /// Represents an individual MFA (Multi-Factor Authentication) factor that the user must complete.
-struct RemainingFactor {
+struct RemainingAction {
     
     /// The type of the MFA factor, such as passkey or OTP via email or SMS.
     ///

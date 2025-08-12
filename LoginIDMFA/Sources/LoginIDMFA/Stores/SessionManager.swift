@@ -21,6 +21,7 @@ final class SessionManager : SessionManaging {
     }
     
     func logout() {
+        // NOTE: delete MFA info
         _ = KeychainManager.removeItem(key: tokenSetKey())
     }
 }

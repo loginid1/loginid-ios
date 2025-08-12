@@ -22,7 +22,7 @@ public protocol TrustIDManaging {
 }
 
 /// A helper type that manages the lifecycle of a wallet identity using a cryptographic key stored in the Keychain.
-final class TrustID : TrustIDManaging {
+final public class TrustID : TrustIDManaging {
     /// Builds the unique key used to store the wallet identity in the Keychain.
     ///
     /// - Returns: A Keychain-safe string based on the app ID.
