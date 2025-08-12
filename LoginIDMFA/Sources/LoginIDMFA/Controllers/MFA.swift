@@ -17,9 +17,13 @@ class MFA {
     @available(iOS 16.0, *)
     public func beginFlow(
         username: String,
-        options: MfaBeginOptions?
+        options: BeginFlowOptions?
     ) async throws -> Void {
         let appId = try config.getAppId()
         let deviceId = store.getDeviceId()
+        let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
+        let values = BeginFlowOptionDefaults(username: username, options: options)
+        
+        let walletTrustId = ""
     }
 }

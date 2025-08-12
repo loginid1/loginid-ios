@@ -8,7 +8,7 @@
 import LoginIDAPIClient
 
 /// Options for beginning Multi-Factor Authentication (MFA).
-public struct MfaBeginOptions {
+public struct BeginFlowOptions {
     /// A human-palatable name for the user account, intended only for display
     /// on your passkeys and modals.
     public let displayName: String?
