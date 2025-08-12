@@ -25,7 +25,7 @@ public class LoginID: NSObject {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID()
-        mfa = MFA(config: config, store: store, trustId: trustId)
+        mfa = MFA(config: config, store: store, session: session, trustId: trustId)
     }
     
     public init(config: LoginIDConfig) {
@@ -36,6 +36,15 @@ public class LoginID: NSObject {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID()
-        mfa = MFA(config: config, store: store, trustId: trustId)
+        mfa = MFA(config: config, store: store, session: session, trustId: trustId)
+    }
+    
+    public func beginFlow(
+        username: String,
+        options: BeginFlowOptions?,
+    ) async throws -> MfaSessionResult {
+        return try await TaskHandler.executeTask {
+            try await self.mfa.beginFlow(username: username, options: options)
+        }
     }
 }

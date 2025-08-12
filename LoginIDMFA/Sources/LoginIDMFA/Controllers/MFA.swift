@@ -28,7 +28,7 @@ final class MFA {
     public func beginFlow(
         username: String,
         options: BeginFlowOptions?
-    ) async throws -> Void {
+    ) async throws -> MfaSessionResult {
         let appId = try config.getAppId()
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
@@ -61,5 +61,7 @@ final class MFA {
         store.storeMFAInfo(info)
         
         session.logout()
+        
+        return MfaSessionResult(info: info, tokenSet: nil)
     }
 }
