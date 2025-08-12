@@ -6,12 +6,14 @@
 //
 
 class MFA {
+    private let trustId: TrustIDManaging
     private let config: LoginIDConfig
     private let store: MFAStoring
     
-    public init(config: LoginIDConfig, store: MFAStoring) {
+    public init(config: LoginIDConfig, store: MFAStoring, trustId: TrustIDManaging) {
         self.config = config
         self.store = store
+        self.trustId = trustId
     }
     
     @available(iOS 16.0, *)
@@ -24,6 +26,9 @@ class MFA {
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
         let values = BeginFlowOptionDefaults(username: username, options: options)
         
-        let walletTrustId = ""
+        var walletTrustId: String? = nil
+        if values.txPayload != nil {
+            walletTrustId = try trustId.signWithTrustId()
+        }
     }
 }
