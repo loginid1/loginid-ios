@@ -54,12 +54,13 @@ open class MfaAPI {
      Request OTP authentication using one of the available methods.
      
      - parameter mfaOtpRequestRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: MfaOtpRequestResponseBody
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaOtpRequest(mfaOtpRequestRequestBody: MfaOtpRequestRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> MfaOtpRequestResponseBody {
-        return try await mfaMfaOtpRequestWithRequestBuilder(mfaOtpRequestRequestBody: mfaOtpRequestRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaOtpRequest(mfaOtpRequestRequestBody: MfaOtpRequestRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> MfaOtpRequestResponseBody {
+        return try await mfaMfaOtpRequestWithRequestBuilder(mfaOtpRequestRequestBody: mfaOtpRequestRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -70,10 +71,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaOtpRequestRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<MfaOtpRequestResponseBody> 
      */
-    open class func mfaMfaOtpRequestWithRequestBuilder(mfaOtpRequestRequestBody: MfaOtpRequestRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<MfaOtpRequestResponseBody> {
+    open class func mfaMfaOtpRequestWithRequestBuilder(mfaOtpRequestRequestBody: MfaOtpRequestRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<MfaOtpRequestResponseBody> {
         let localVariablePath = "/fido2/v2/mfa/otp/request"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaOtpRequestRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -82,6 +84,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -95,12 +98,13 @@ open class MfaAPI {
      Confirm OTP received in a previous step.
      
      - parameter mfaOtpVerifyRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Mfa
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaOtpVerify(mfaOtpVerifyRequestBody: MfaOtpVerifyRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
-        return try await mfaMfaOtpVerifyWithRequestBuilder(mfaOtpVerifyRequestBody: mfaOtpVerifyRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaOtpVerify(mfaOtpVerifyRequestBody: MfaOtpVerifyRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
+        return try await mfaMfaOtpVerifyWithRequestBuilder(mfaOtpVerifyRequestBody: mfaOtpVerifyRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -111,10 +115,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaOtpVerifyRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Mfa> 
      */
-    open class func mfaMfaOtpVerifyWithRequestBuilder(mfaOtpVerifyRequestBody: MfaOtpVerifyRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
+    open class func mfaMfaOtpVerifyWithRequestBuilder(mfaOtpVerifyRequestBody: MfaOtpVerifyRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
         let localVariablePath = "/fido2/v2/mfa/otp/verify"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaOtpVerifyRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -123,6 +128,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -136,12 +142,13 @@ open class MfaAPI {
      Authenticate using passkey.
      
      - parameter mfaPasskeyAuthRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Mfa
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaPasskeyAuth(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
-        return try await mfaMfaPasskeyAuthWithRequestBuilder(mfaPasskeyAuthRequestBody: mfaPasskeyAuthRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaPasskeyAuth(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
+        return try await mfaMfaPasskeyAuthWithRequestBuilder(mfaPasskeyAuthRequestBody: mfaPasskeyAuthRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -152,10 +159,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaPasskeyAuthRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Mfa> 
      */
-    open class func mfaMfaPasskeyAuthWithRequestBuilder(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
+    open class func mfaMfaPasskeyAuthWithRequestBuilder(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
         let localVariablePath = "/fido2/v2/mfa/passkey/auth"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaPasskeyAuthRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -164,6 +172,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -177,12 +186,13 @@ open class MfaAPI {
      Register a new passkey.
      
      - parameter mfaPasskeyRegRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Mfa
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaPasskeyReg(mfaPasskeyRegRequestBody: MfaPasskeyRegRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
-        return try await mfaMfaPasskeyRegWithRequestBuilder(mfaPasskeyRegRequestBody: mfaPasskeyRegRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaPasskeyReg(mfaPasskeyRegRequestBody: MfaPasskeyRegRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
+        return try await mfaMfaPasskeyRegWithRequestBuilder(mfaPasskeyRegRequestBody: mfaPasskeyRegRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -193,10 +203,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaPasskeyRegRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Mfa> 
      */
-    open class func mfaMfaPasskeyRegWithRequestBuilder(mfaPasskeyRegRequestBody: MfaPasskeyRegRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
+    open class func mfaMfaPasskeyRegWithRequestBuilder(mfaPasskeyRegRequestBody: MfaPasskeyRegRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
         let localVariablePath = "/fido2/v2/mfa/passkey/reg"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaPasskeyRegRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -205,6 +216,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -218,12 +230,13 @@ open class MfaAPI {
      Transaction confirmation using passkey.
      
      - parameter mfaPasskeyAuthRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Mfa
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaPasskeyTx(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
-        return try await mfaMfaPasskeyTxWithRequestBuilder(mfaPasskeyAuthRequestBody: mfaPasskeyAuthRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaPasskeyTx(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
+        return try await mfaMfaPasskeyTxWithRequestBuilder(mfaPasskeyAuthRequestBody: mfaPasskeyAuthRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -234,10 +247,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaPasskeyAuthRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Mfa> 
      */
-    open class func mfaMfaPasskeyTxWithRequestBuilder(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
+    open class func mfaMfaPasskeyTxWithRequestBuilder(mfaPasskeyAuthRequestBody: MfaPasskeyAuthRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
         let localVariablePath = "/fido2/v2/mfa/passkey/tx"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaPasskeyAuthRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -246,6 +260,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -259,12 +274,13 @@ open class MfaAPI {
      Verify auth token created by a third party via management API.
      
      - parameter mfaThirdPartyAuthVerifyRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Mfa
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func mfaMfaThirdPartyAuthVerify(mfaThirdPartyAuthVerifyRequestBody: MfaThirdPartyAuthVerifyRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
-        return try await mfaMfaThirdPartyAuthVerifyWithRequestBuilder(mfaThirdPartyAuthVerifyRequestBody: mfaThirdPartyAuthVerifyRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func mfaMfaThirdPartyAuthVerify(mfaThirdPartyAuthVerifyRequestBody: MfaThirdPartyAuthVerifyRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Mfa {
+        return try await mfaMfaThirdPartyAuthVerifyWithRequestBuilder(mfaThirdPartyAuthVerifyRequestBody: mfaThirdPartyAuthVerifyRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -275,10 +291,11 @@ open class MfaAPI {
        - type: apiKey Authorization (HEADER)
        - name: sessionAuth_header_Authorization
      - parameter mfaThirdPartyAuthVerifyRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Mfa> 
      */
-    open class func mfaMfaThirdPartyAuthVerifyWithRequestBuilder(mfaThirdPartyAuthVerifyRequestBody: MfaThirdPartyAuthVerifyRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
+    open class func mfaMfaThirdPartyAuthVerifyWithRequestBuilder(mfaThirdPartyAuthVerifyRequestBody: MfaThirdPartyAuthVerifyRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Mfa> {
         let localVariablePath = "/fido2/v2/mfa/third-party/verify"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaThirdPartyAuthVerifyRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -287,6 +304,7 @@ open class MfaAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)

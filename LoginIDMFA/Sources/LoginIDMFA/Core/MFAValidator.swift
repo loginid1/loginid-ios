@@ -36,7 +36,7 @@ final class MFAValidator {
         action: MfaActionAction.Name,
         info: MFAInfo?,
         options: PerformActionOptions?
-    ) throws -> PerformActionOptions {
+    ) throws -> ActionPayload {
         let session = options?.session ?? info?.session
         guard let session else {
             throw LoginIDError(
@@ -46,11 +46,9 @@ final class MFAValidator {
         }
 
         if let payload = options?.payload, !payload.isEmpty {
-            return PerformActionOptions(
+            return ActionPayload(
                 session: session,
                 payload: payload,
-                autoFill: options?.autoFill,
-                displayName: options?.displayName
             )
         }
         
@@ -103,11 +101,9 @@ final class MFAValidator {
             )
         }
 
-        return PerformActionOptions(
+        return ActionPayload(
             session: session,
             payload: resolvedPayload,
-            autoFill: options?.autoFill,
-            displayName: options?.displayName
         )
     }
     

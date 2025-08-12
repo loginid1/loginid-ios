@@ -7,6 +7,10 @@ const data = yaml.load(file)
 const allowedTags = new Set(['mfa'])
 const allowedSchemas = new Set()
 
+const allowedSecurityHeaders = new Set([
+  "sessionAuth_header_Authorization",
+]);
+
 const extractSchemas = (schema) => {
   if (!schema) return;
 
@@ -47,7 +51,7 @@ for (const pathKey in data.paths) {
     const hasAllowedTag = method.tags?.some((tag) => allowedTags.has(tag))
 
     if (hasAllowedTag) {
-      if (method.security?.some((sec) => sec.jwt_header_Authorization)) {
+      if (method.security?.some((sec) => Object.keys(sec).some((key) => allowedSecurityHeaders.has(key)))) {
         if (!method.parameters) {
           method.parameters = []
         }

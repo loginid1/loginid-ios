@@ -67,7 +67,7 @@ final class MFA {
     public func performAction(
         action: MfaActionAction.Name,
         options: PerformActionOptions?,
-    ) async throws -> Void {
+    ) async throws -> MFASessionResult {
         let appId = try config.getAppId()
         let info = store.getMFAInfo()
         let values = try MFAValidator.actionValidator(action: action, info: info, options: options)
@@ -75,10 +75,25 @@ final class MFA {
         switch action {
         case .passkeyReg, .passkeyAuth, .passkeyTx:
             print("wow")
+            
+            throw LoginIDError(
+                msgCode: "",
+                msg: "MFA factor \(action) is not supported in the current MFA flow."
+            )
         case .external:
-            print("")
+            return try await invokeMfaApi(appId: appId, username: info?.username) {
+                let requestBody = MfaThirdPartyAuthVerifyRequestBody(token: values.payload)
+                return try await MfaAPI.mfaMfaThirdPartyAuthVerify(
+                    mfaThirdPartyAuthVerifyRequestBody: requestBody,
+                    authorization: values.session,
+                )
+            }
+            
         default:
-            print("thing")
+            throw LoginIDError(
+                msgCode: "",
+                msg: "MFA factor \(action) is not supported in the current MFA flow."
+            )
         }
     }
     
