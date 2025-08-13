@@ -52,7 +52,7 @@ final public class LoginIDConfig: Sendable {
     /// - Throws: A `LoginIDError` if the base URL does not contain a valid App ID.
     /// - Returns: A string representing the App ID.
     private func resolveAppId() throws -> String {
-        let pattern = "https://([0-9a-fA-F-]+)\\.api.*\\.loginid\\.io"
+        let pattern = "https://([0-9A-Za-z-]+)\\.api.*\\.loginid\\.io"
         let regex = try NSRegularExpression(pattern: pattern, options: [])
         let nsBaseUrl = baseUrl as NSString
         let results = regex.matches(

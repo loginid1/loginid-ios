@@ -51,6 +51,7 @@ final class MFA : Sendable {
         
         let mfaNextResult = try await MfaAPI.mfaMfaBegin(
             // Already supplied by device info
+            //TODO: Add a realish userAgent header here after
             userAgent: "iOS",
             mfaBeginRequestBody: mfaBeginRequestBody,
         )
