@@ -170,7 +170,7 @@ final class MFA : Sendable {
             session.setTokenSet(tokenSet)
             
             return MFASessionResult(info: info, tokenSet: tokenSet)
-        } catch let ErrorResponse.error(status, data, urlResponse, underlying)  {
+        } catch let LoginIDAPIClient.ErrorResponse.error(status, data, urlResponse, underlying)  {
             if status == 401,
                let data = data,
                let result = try? JSONCoding.decoder().decode(MfaNext.self, from: data),
