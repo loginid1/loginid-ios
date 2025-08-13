@@ -29,7 +29,6 @@ final class MFA {
         username: String,
         options: BeginFlowOptions?
     ) async throws -> MFASessionResult {
-        let appId = try config.getAppId()
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
         let values = BeginFlowOptionDefaults(username: username, options: options)
@@ -74,12 +73,69 @@ final class MFA {
         
         switch action {
         case .passkeyReg, .passkeyAuth, .passkeyTx:
-            print("wow")
+            let options = try MFAValidator.validatePasskeyPayload(values.payload)
+            switch options {
+            case .creation(let creation):
+                return try await invokeMfaApi(appId: appId, username: info?.username) {
+                    //TODO: add displayName here
+                    
+                    let credential = try await CreateController().performRequests(
+                        publicKey: creation
+                    )
+                    
+                    let creationResult = CreationResult(
+                        attestationObject: credential.attestationObject,
+                        clientDataJSON: credential.clientDataJSON,
+                        credentialId: credential.id
+                    )
+                    
+                    let requestBody = MfaPasskeyRegRequestBody(creationResult: creationResult)
+                    
+                    return try await MfaAPI.mfaMfaPasskeyReg(
+                        mfaPasskeyRegRequestBody: requestBody,
+                        authorization: values.session,
+                    )
+                }
+            case .request(let request):
+                return try await invokeMfaApi(appId: appId, username: info?.username) {
+                    let credential = try await GetController().performRequests(
+                        publicKey: request
+                    )
+                    
+                    let assertionResult = AuthenticatorAssertionResponse(
+                        authenticatorData: credential.authenticatorData,
+                        clientDataJSON: credential.clientDataJSON,
+                        credentialId: credential.id,
+                        signature: credential.signature,
+                        userHandle: credential.userHandle
+
+                    )
+                    
+                    let requestBody = MfaPasskeyAuthRequestBody(
+                        assertionResult: assertionResult
+                    )
+                    
+                    if (action == .passkeyTx) {
+                        return try await MfaAPI.mfaMfaPasskeyAuth(
+                            mfaPasskeyAuthRequestBody: requestBody,
+                            authorization: values.session,
+                        )
+                    }
+                    
+                    if (action == .passkeyAuth) {
+                        return try await MfaAPI.mfaMfaPasskeyTx(
+                            mfaPasskeyAuthRequestBody: requestBody,
+                            authorization: values.session,
+                        )
+                    }
+                    
+                    throw LoginIDError(
+                        msgCode: "",
+                        msg: "MFA factor \(action) is not supported in the current MFA flow."
+                    )
+                }
+            }
             
-            throw LoginIDError(
-                msgCode: "",
-                msg: "MFA factor \(action) is not supported in the current MFA flow."
-            )
         case .external:
             return try await invokeMfaApi(appId: appId, username: info?.username) {
                 let requestBody = MfaThirdPartyAuthVerifyRequestBody(token: values.payload)

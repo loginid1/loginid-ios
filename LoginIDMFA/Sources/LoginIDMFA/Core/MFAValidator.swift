@@ -10,6 +10,11 @@ import LoginIDAPIClient
 /// Utility for validating and resolving the required payload
 /// to perform specific Multi-Factor Authentication (MFA) actions.
 final class MFAValidator {
+    enum PasskeyOptions {
+        case creation(PublicKeyCredentialCreationOptions)
+        case request(PublicKeyCredentialRequestOptions)
+    }
+    
     /**
      Validates that all required information is present to perform the given MFA action,
      and resolves the payload to be used.
@@ -104,6 +109,43 @@ final class MFAValidator {
         return ActionPayload(
             session: session,
             payload: resolvedPayload,
+        )
+    }
+    
+    static public func validatePasskeyPayload(_ payload: String?) throws -> PasskeyOptions {
+        guard let payload, !payload.isEmpty else {
+            throw LoginIDError(
+                msgCode: "not_found",
+                msg: "Payload is required for passkeys",
+            )
+        }
+        
+        guard let jsonData = payload.decodeJWTOrPayloadSegment() else {
+            throw LoginIDError(
+                msgCode: "invalid_param",
+                msg: "Invalid payload for passkey",
+            )
+        }
+        
+        if let creation = try? JSONCoding.decoder().decode(
+            PublicKeyCredentialCreationOptions.self,
+            from: jsonData
+        ),
+           creation.isValid {
+            return .creation(creation)
+        }
+        
+        if let request = try? JSONCoding.decoder().decode(
+            PublicKeyCredentialRequestOptions.self,
+            from: jsonData
+        ),
+           request.isValid {
+            return .request(request)
+        }
+        
+        throw LoginIDError(
+            msgCode: "invalid_param",
+            msg: "Invalid payload for passkey",
         )
     }
     
