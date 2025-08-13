@@ -63,10 +63,10 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
         switch authorization.credential {
         case let credential as ASAuthorizationPublicKeyCredentialRegistration:
             let response = CreatePublicKeyResponse(
-                id: credential.credentialID.base64EncodedData(),
-                rawId: credential.credentialID.base64EncodedData(),
-                clientDataJSON: credential.rawClientDataJSON.base64EncodedData(),
-                attestationObject: credential.rawAttestationObject!.base64EncodedData()
+                id: credential.credentialID,
+                rawId: credential.credentialID,
+                clientDataJSON: credential.rawClientDataJSON,
+                attestationObject: credential.rawAttestationObject!
             )
             createContinuation?.resume(returning: response)
         default:

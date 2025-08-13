@@ -23,11 +23,11 @@ struct GetPublicKeyResponse {
         signature: Data,
         userHandle: Data
     ) {
-        self.id = id.base64EncodedString()
-        self.rawId = rawId.base64EncodedString()
-        self.clientDataJSON = clientDataJSON.base64EncodedString()
-        self.authenticatorData = authenticatorData.base64EncodedString()
-        self.signature = signature.base64EncodedString()
-        self.userHandle = userHandle.base64EncodedString()
+        self.id = id.base64URLEncodedString()
+        self.rawId = rawId.base64URLEncodedString()
+        self.clientDataJSON = clientDataJSON.base64URLEncodedString()
+        self.authenticatorData = authenticatorData.base64URLEncodedString()
+        self.signature = signature.base64URLEncodedString()
+        self.userHandle = userHandle.base64URLEncodedString()
     }
 }

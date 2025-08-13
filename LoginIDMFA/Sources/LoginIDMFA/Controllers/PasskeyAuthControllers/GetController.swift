@@ -11,7 +11,10 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
     ASAuthorizationControllerPresentationContextProviding {
     private var getContinuation: CheckedContinuation<GetPublicKeyResponse, Error>?
 
-    public func performRequests(publicKey: PublicKeyCredentialRequestOptions) async throws -> GetPublicKeyResponse {
+    public func performRequests(
+        publicKey: PublicKeyCredentialRequestOptions,
+        autoFill: Bool = false,
+    ) async throws -> GetPublicKeyResponse {
         return try await withCheckedThrowingContinuation { continuation in
             self.getContinuation = continuation
 
@@ -38,6 +41,12 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
             authController.delegate = self
             authController.presentationContextProvider = self
             authController.performRequests()
+            
+            if autoFill {
+                authController.performRequests()
+            } else {
+                authController.performAutoFillAssistedRequests()
+            }
         }
     }
 
@@ -53,12 +62,12 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
         switch authorization.credential {
         case let credential as ASAuthorizationPublicKeyCredentialAssertion:
             let response = GetPublicKeyResponse(
-                id: credential.credentialID.base64EncodedData(),
-                rawId: credential.credentialID.base64EncodedData(),
-                clientDataJSON: credential.rawClientDataJSON.base64EncodedData(),
-                authenticatorData: credential.rawAuthenticatorData.base64EncodedData(),
-                signature: credential.signature.base64EncodedData(),
-                userHandle: credential.userID.base64EncodedData()
+                id: credential.credentialID,
+                rawId: credential.credentialID,
+                clientDataJSON: credential.rawClientDataJSON,
+                authenticatorData: credential.rawAuthenticatorData,
+                signature: credential.signature,
+                userHandle: credential.userID
             )
             getContinuation?.resume(returning: response)
         default:

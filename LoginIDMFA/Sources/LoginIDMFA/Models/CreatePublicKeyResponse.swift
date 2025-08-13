@@ -14,9 +14,9 @@ struct CreatePublicKeyResponse {
     public let attestationObject: String
 
     init(id: Data, rawId: Data, clientDataJSON: Data, attestationObject: Data) {
-        self.id = id.base64EncodedString()
-        self.rawId = rawId.base64EncodedString()
-        self.clientDataJSON = clientDataJSON.base64EncodedString()
-        self.attestationObject = attestationObject.base64EncodedString()
+        self.id = id.base64URLEncodedString()
+        self.rawId = rawId.base64URLEncodedString()
+        self.clientDataJSON = clientDataJSON.base64URLEncodedString()
+        self.attestationObject = attestationObject.base64URLEncodedString()
     }
 }

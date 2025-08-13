@@ -74,8 +74,8 @@ final class MFA : Sendable {
         
         switch action {
         case .passkeyReg, .passkeyAuth, .passkeyTx:
-            let options = try MFAValidator.validatePasskeyPayload(values.payload)
-            switch options {
+            let passkeyOptions = try MFAValidator.validatePasskeyPayload(values.payload)
+            switch passkeyOptions {
             case .creation(let creation):
                 return try await invokeMfaApi(appId: appId, username: info?.username) {
                     //TODO: add displayName here
@@ -100,7 +100,8 @@ final class MFA : Sendable {
             case .request(let request):
                 return try await invokeMfaApi(appId: appId, username: info?.username) {
                     let credential = try await GetController().performRequests(
-                        publicKey: request
+                        publicKey: request,
+                        autoFill: options?.autoFill ?? false
                     )
                     
                     let assertionResult = AuthenticatorAssertionResponse(
@@ -117,14 +118,14 @@ final class MFA : Sendable {
                     )
                     
                     if (action == .passkeyTx) {
-                        return try await MfaAPI.mfaMfaPasskeyAuth(
+                        return try await MfaAPI.mfaMfaPasskeyTx(
                             mfaPasskeyAuthRequestBody: requestBody,
                             authorization: values.session,
                         )
                     }
                     
                     if (action == .passkeyAuth) {
-                        return try await MfaAPI.mfaMfaPasskeyTx(
+                        return try await MfaAPI.mfaMfaPasskeyAuth(
                             mfaPasskeyAuthRequestBody: requestBody,
                             authorization: values.session,
                         )

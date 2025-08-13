@@ -11,8 +11,9 @@ import Foundation
 public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
 
     public enum Flow: String, Sendable, Codable, CaseIterable {
-        case signin = "signIn"
-        case signup = "signUp"
+        case signin = "signin"
+        case signup = "signup"
+        case checkout = "checkout"
     }
     /** An authorization token (JWT) confirming successful authentication. */
     public var accessToken: String
