@@ -8,7 +8,7 @@
 import Foundation
 
 /// A configuration object that stores and manages the LoginID service configurable options.
-public class LoginIDConfig: NSObject {
+final public class LoginIDConfig: Sendable {
     /// The base URL of the LoginID service.
     ///
     /// This value is used to resolve the App ID and make API calls.
@@ -19,8 +19,6 @@ public class LoginIDConfig: NSObject {
     /// - Parameter baseUrl: The base URL of the LoginID service.
     public init(baseUrl: String) {
         self.baseUrl = baseUrl
-
-        super.init()
     }
     
     /// Extracts the App ID from the base URL using a regular expression or an empty string if not found.

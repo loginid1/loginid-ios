@@ -7,7 +7,7 @@
 
 /// A protocol defining storage operations for persisting and retrieving
 /// the device identifier used in Multi-Factor Authentication (MFA) flows.
-public protocol MFAStoring {
+public protocol MFAStoring : Sendable {
     /**
      Persists a device identifier.
      

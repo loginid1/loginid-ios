@@ -6,6 +6,7 @@
 //
 
 import AuthenticationServices
+import LoginIDAPIClient
 
 /// A utility for executing asynchronous tasks with centralized error handling,
 /// mapping various error types into `LoginIDError` for consistent downstream processing.
@@ -36,8 +37,15 @@ enum TaskHandler {
             throw LoginIDError.fromErrorResponse(from: error)
         } catch let error as ASAuthorizationError {
             throw LoginIDError.fromErrorASAuthorization(from: error)
+        } catch let LoginIDAPIClient.ErrorResponse.error(status, data, urlResponse, underlying)  {
+            if let data = data {
+                let bodyString = String(data: data, encoding: .utf8) ?? "<Non-UTF8 data>"
+                throw LoginIDError(msgCode: "api_error", msg: bodyString)
+            } else {
+                throw LoginIDError(msgCode: "api_error", msg: "<No body>")
+            }
         } catch let error as NSError {
-            throw LoginIDError(msgCode: "client_error", msg: error.localizedDescription)
+            throw LoginIDError(msgCode: "client_error", msg: error.description)
         } catch {
             throw LoginIDError.unknown
         }

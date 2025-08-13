@@ -8,7 +8,7 @@
 import Foundation
 import LoginIDAPIClient
 
-public class LoginID: NSObject {
+final public class LoginID: Sendable {
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -31,6 +31,8 @@ public class LoginID: NSObject {
     public init(config: LoginIDConfig) {
         self.config = config
         
+        OpenAPIClientAPIConfiguration.shared.basePath = config.getBaseUrl()
+
         let appId = config.getAppIdOrEmpty()
         
         store = MFAStore(appId: appId)

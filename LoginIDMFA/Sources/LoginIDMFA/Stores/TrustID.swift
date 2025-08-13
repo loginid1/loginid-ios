@@ -7,7 +7,7 @@
 
 /// Handles the lifecycle and signing of a Trust ID
 /// stored securely in the Keychain.
-public protocol TrustIDManaging {
+public protocol TrustIDManaging: Sendable {
     /// Removes the Trust ID and its key pair from the Keychain.
     func deleteTrustId()
     

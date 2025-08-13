@@ -7,7 +7,7 @@
 
 import LoginIDAPIClient
 
-final class MFA {
+final class MFA : Sendable {
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig

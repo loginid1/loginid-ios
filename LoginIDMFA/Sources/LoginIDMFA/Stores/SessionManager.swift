@@ -6,7 +6,7 @@
 //
 
 /// A protocol defining methods for managing an MFA session's lifecycle.
-protocol SessionManaging {
+protocol SessionManaging: Sendable {
     /**
      Logs the user out of the current session and removes any stored credentials or tokens.
      */
