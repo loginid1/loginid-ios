@@ -48,4 +48,13 @@ public class LoginID: NSObject {
             try await self.mfa.beginFlow(username: username, options: options)
         }
     }
+    
+    public func performAction(
+        action: MfaActionAction.Name,
+        options: PerformActionOptions?,
+    ) async throws -> MFASessionResult {
+        return try await TaskHandler.executeTask {
+            try await self.mfa.performAction(action: action, options: options)
+        }
+    }
 }
