@@ -40,12 +40,11 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
 
             authController.delegate = self
             authController.presentationContextProvider = self
-            authController.performRequests()
             
             if autoFill {
-                authController.performRequests()
-            } else {
                 authController.performAutoFillAssistedRequests()
+            } else {
+                authController.performRequests()
             }
         }
     }
