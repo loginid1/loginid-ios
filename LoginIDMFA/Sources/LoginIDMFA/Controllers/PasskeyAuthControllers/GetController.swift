@@ -53,12 +53,12 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
         switch authorization.credential {
         case let credential as ASAuthorizationPublicKeyCredentialAssertion:
             let response = GetPublicKeyResponse(
-                id: credential.credentialID,
-                rawId: credential.credentialID,
-                clientDataJSON: credential.rawClientDataJSON,
-                authenticatorData: credential.rawAuthenticatorData,
-                signature: credential.signature,
-                userHandle: credential.userID
+                id: credential.credentialID.base64EncodedData(),
+                rawId: credential.credentialID.base64EncodedData(),
+                clientDataJSON: credential.rawClientDataJSON.base64EncodedData(),
+                authenticatorData: credential.rawAuthenticatorData.base64EncodedData(),
+                signature: credential.signature.base64EncodedData(),
+                userHandle: credential.userID.base64EncodedData()
             )
             getContinuation?.resume(returning: response)
         default:
