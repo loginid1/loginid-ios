@@ -2,7 +2,7 @@
 //  String+DecodeJWTOrPayloadSegment.swift
 //  LoginIDMFA
 //
-//  Created by Michael Braga on 2025-08-12.
+//  Created by Michael Braga on 2025-08-14.
 //
 
 import Foundation
