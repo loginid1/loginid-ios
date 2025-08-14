@@ -1,8 +1,8 @@
 //
 //  LoginIDConfig.swift
-//  LoginIDMFA
+//  Core
 //
-//  Created by Michael Braga on 2025-07-31.
+//  Created by Michael Braga on 2025-08-14.
 //
 
 import Foundation
@@ -72,5 +72,4 @@ final public class LoginIDConfig: Sendable {
             )
         }
     }
-
 }

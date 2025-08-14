@@ -1,8 +1,8 @@
 //
 //  KeychainManager.swift
-//  LoginIDMFA
+//  Core
 //
-//  Created by Michael Braga on 2025-08-11.
+//  Created by Michael Braga on 2025-08-14.
 //
 
 import Security
@@ -10,7 +10,7 @@ import Foundation
 
 /// A utility class for storing, retrieving, and deleting small pieces of secure data
 /// in the iOS Keychain. Supports storing generic password items keyed by account name.
-class KeychainManager {
+public class KeychainManager {
     /**
      Stores a data item in the Keychain under the specified key.
      
@@ -72,4 +72,3 @@ class KeychainManager {
         return SecItemDelete(query as CFDictionary)
     }
 }
-

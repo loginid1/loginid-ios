@@ -6,6 +6,7 @@
 //
 
 import AuthenticationServices
+import LoginIDCore
 
 /// Handles the assertion of passkeys on iOS,
 /// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.

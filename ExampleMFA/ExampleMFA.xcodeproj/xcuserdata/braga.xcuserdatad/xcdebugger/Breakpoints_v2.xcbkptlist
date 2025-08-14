@@ -20,5 +20,157 @@
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9E0A3B14-D1AA-4F6C-85E6-D55C40EEAD2F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "beginFlow(username:options:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F900731B-90C6-46BF-9420-355CC12697B2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "beginFlow(username:options:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F900731B-90C6-46BF-9420-355CC12697B2 - 2f8185f398c8274a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for LoginIDMFA.MFA.beginFlow(username: Swift.String, options: Swift.Optional&lt;LoginIDMFA.BeginFlowOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79">
+               </Location>
+               <Location
+                  uuid = "F900731B-90C6-46BF-9420-355CC12697B2 - 5f37e6508b0e4177"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(8) suspend resume partial function for LoginIDMFA.MFA.beginFlow(username: Swift.String, options: Swift.Optional&lt;LoginIDMFA.BeginFlowOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BCE7C917-2DAF-4224-B6A4-9DAF352C470A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../LoginIDMFA/Sources/LoginIDMFA/Models/MFASessionResult.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "init(info:tokenSet:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3813D920-E84A-4F0D-8214-144CE8E14479"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "performAction(action:options:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3813D920-E84A-4F0D-8214-144CE8E14479 - 960c4c3a49cf35be"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 () async throws -&gt; LoginIDAPIClient.Mfa in LoginIDMFA.MFA.performAction(action: LoginIDAPIClient.MfaActionAction.Name, options: Swift.Optional&lt;LoginIDMFA.PerformActionOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+               <Location
+                  uuid = "3813D920-E84A-4F0D-8214-144CE8E14479 - c2dea09da53b17bd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) suspend resume partial function for closure #2 () async throws -&gt; LoginIDAPIClient.Mfa in LoginIDMFA.MFA.performAction(action: LoginIDAPIClient.MfaActionAction.Name, options: Swift.Optional&lt;LoginIDMFA.PerformActionOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+               <Location
+                  uuid = "3813D920-E84A-4F0D-8214-144CE8E14479 - 2fe3f7f10128e9bc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #2 () async throws -&gt; LoginIDAPIClient.Mfa in LoginIDMFA.MFA.performAction(action: LoginIDAPIClient.MfaActionAction.Name, options: Swift.Optional&lt;LoginIDMFA.PerformActionOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+               <Location
+                  uuid = "3813D920-E84A-4F0D-8214-144CE8E14479 - bb498464db23a8f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(10) suspend resume partial function for closure #2 () async throws -&gt; LoginIDAPIClient.Mfa in LoginIDMFA.MFA.performAction(action: LoginIDAPIClient.MfaActionAction.Name, options: Swift.Optional&lt;LoginIDMFA.PerformActionOptions&gt;) async throws -&gt; LoginIDMFA.MFASessionResult"
+                  moduleName = "ExampleMFA.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/braga/LoginID/loginid-ios/LoginIDMFA/Sources/LoginIDMFA/Controllers/MFA.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "155"
+                  endingLineNumber = "155">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
