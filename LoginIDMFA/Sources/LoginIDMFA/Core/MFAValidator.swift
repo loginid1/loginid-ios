@@ -10,8 +10,12 @@ import LoginIDAPIClient
 /// Utility for validating and resolving the required payload
 /// to perform specific Multi-Factor Authentication (MFA) actions.
 final class MFAValidator {
+    /// Represents the type of passkey operation to perform,
+    /// either creating a new credential or requesting an existing one.
     enum PasskeyOptions {
+        /// Passkey creation using `PublicKeyCredentialCreationOptions`.
         case creation(PublicKeyCredentialCreationOptions)
+        /// Passkey assertion request using `PublicKeyCredentialRequestOptions`.
         case request(PublicKeyCredentialRequestOptions)
     }
     
@@ -112,6 +116,21 @@ final class MFAValidator {
         )
     }
     
+    /**
+     Validates a Base64URL-encoded passkey payload and returns the corresponding `PasskeyOptions`.
+     
+     This method:
+     1. Ensures the payload is non-empty.
+     2. Decodes it from either a raw payload segment or a JWT.
+     3. Attempts to parse it into a valid `PublicKeyCredentialCreationOptions` or
+        `PublicKeyCredentialRequestOptions`.
+     
+     - Parameter payload: The Base64URL-encoded payload string to validate.
+     - Returns: A `PasskeyOptions` value representing either a creation or request operation.
+     - Throws:
+       - `LoginIDError` with `msgCode = "not_found"` if the payload is missing.
+       - `LoginIDError` with `msgCode = "invalid_param"` if decoding fails or the payload is invalid.
+     */
     static public func validatePasskeyPayload(_ payload: String?) throws -> PasskeyOptions {
         guard let payload, !payload.isEmpty else {
             throw LoginIDError(

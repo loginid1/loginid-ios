@@ -8,6 +8,12 @@
 import Foundation
 
 extension String {
+    /// Decodes a Base64URL-encoded string into `Data`.
+    ///
+    /// This method replaces URL-safe characters (`-` → `+`, `_` → `/`),
+    /// then pads the string to a multiple of 4 characters before decoding.
+    ///
+    /// - Returns: The decoded `Data`, or `nil` if the string is not valid Base64URL.
     func base64URLDecode() -> Data? {
         var base64 = self
             .replacingOccurrences(of: "-", with: "+")
