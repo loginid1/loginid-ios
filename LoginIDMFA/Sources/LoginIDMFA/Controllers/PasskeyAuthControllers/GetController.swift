@@ -7,10 +7,29 @@
 
 import AuthenticationServices
 
+/// Handles the assertion of passkeys on iOS,
+/// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.
+/// Wraps delegate callbacks in Swift's async/await model with `CheckedContinuation`.
 class GetController: NSObject, ASAuthorizationControllerDelegate,
     ASAuthorizationControllerPresentationContextProviding {
+    /// Continuation used to resume execution after the authorization request completes.
     private var getContinuation: CheckedContinuation<GetPublicKeyResponse, Error>?
 
+    /**
+     Initiates a passkey assertion request.
+     
+     - Parameters:
+       - publicKey: The `PublicKeyCredentialRequestOptions` containing the challenge,
+         relying party ID, and allowed credentials for assertion.
+       - autoFill: If `true`, performs an AutoFill-assisted request; otherwise, performs a standard request.
+     
+     - Returns: A `GetPublicKeyResponse` with the credential's ID, raw ID, client data,
+       authenticator data, signature, and user handle.
+     
+     - Throws:
+       - Any `Error` encountered during the request.
+       - `LoginIDError` if the response is invalid.
+     */
     public func performRequests(
         publicKey: PublicKeyCredentialRequestOptions,
         autoFill: Bool = false,
@@ -49,11 +68,13 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
         }
     }
 
+    /// Called when the authorization request fails.
     public func authorizationController(controller _: ASAuthorizationController, didCompleteWithError error: Error) {
         getContinuation?.resume(throwing: error)
         getContinuation = nil
     }
 
+    /// Called when the authorization request completes successfully.
     public func authorizationController(
         controller _: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
@@ -75,6 +96,11 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
         }
     }
 
+    /*
+    Provides the presentation anchor (window) used for the passkey creation UI.
+    
+    - Returns: The first available window in the connected scenes, or a new `UIWindow` if none found.
+    */
     func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {

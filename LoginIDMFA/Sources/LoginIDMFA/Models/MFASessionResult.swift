@@ -52,6 +52,19 @@ public struct MFASessionResult: Sendable {
     /// Indicates which MFA factor the user should complete next in order to proceed.
     public let nextAction: MfaActionAction.Name?
     
+    /**
+     Initializes a new instance using optional `MFAInfo` and `TokenSet` data.
+     
+     This initializer:
+     - Copies flow, username, session, and token values from the provided parameters.
+     - Determines if the MFA process is complete based on token availability.
+     - Selects the next action to perform based on a predefined priority list.
+     - Builds a list of remaining factors with relevant details and options.
+     
+     - Parameters:
+       - info: Optional `MFAInfo` containing current MFA state and available actions.
+       - tokenSet: Optional `TokenSet` containing authentication tokens.
+     */
     public init(info: MFAInfo?, tokenSet: TokenSet?) {
         self.flow = info?.flow
         self.username = info?.username

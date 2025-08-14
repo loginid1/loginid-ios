@@ -7,12 +7,25 @@
 
 import LoginIDAPIClient
 
+/// Provides the core interface for performing Multi-Factor Authentication (MFA) flows.
+///
+/// Handles MFA configuration, secure session storage, device trust management, and persistence
+/// of MFA-related data.
 final class MFA : Sendable {
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
     private let store: MFAStoring
     
+    /**
+     Creates a new MFA instance.
+     
+     - Parameters:
+       - config: The `LoginIDConfig` containing API configuration values.
+       - store: An `MFAStoring` implementation for persisting MFA-related data such as device IDs.
+       - session: A `SessionManaging` implementation for handling MFA session tokens.
+       - trustId: A `TrustIDManaging` implementation for managing device trust identifiers.
+     */
     public init(
         config: LoginIDConfig,
         store: MFAStoring,
@@ -25,6 +38,19 @@ final class MFA : Sendable {
         self.trustId = trustId
     }
     
+    /**
+     Initiates the pre-authentication process for Multi-Factor Authentication (MFA).
+
+     Begins an MFA session and persists session details to secure storage.
+
+     Use `performAction` to continue the MFA flow with a required payload when needed.
+
+     - Parameters:
+       - username: The username of the user initiating MFA.
+       - options: Optional parameters for initiating MFA. Pass `nil` to use defaults.
+     - Returns: An `MFASessionResult` describing the current MFA session state and next actions.
+     - Throws: `LoginIDError` if the request fails or the response is invalid.
+     */
     public func beginFlow(
         username: String,
         options: BeginFlowOptions?
@@ -64,6 +90,26 @@ final class MFA : Sendable {
         return MFASessionResult(info: info, tokenSet: nil)
     }
     
+    /**
+     Performs a Multi-Factor Authentication (MFA) action using the specified factor.
+
+     Supports passkeys, OTP (email/SMS), and external authentication. Validates the
+     provided options, processes the step, calls the corresponding MFA API, and updates
+     the MFA session details upon success.
+
+     - Important:
+       - **Passkeys:** Uses WebAuthn for authentication or registration.
+       - **External authentication:** Provide the authorization code in `options.payload`.
+       - **OTP Request (email/SMS):** Sends an OTP to the user's contact. If `options.payload`
+         contains a contact, it is used; otherwise, the primary contact on record is used.
+       - **OTP Verify (email/SMS):** Verifies the OTP code provided in `options.payload`.
+
+     - Parameters:
+       - action: The MFA factor to perform (e.g., `.passkeyAuth`,  `.passkeyReg`, `.passkeyTx`, `.external`).
+       - options: The session/payload options for the action. Pass `nil` to resolve defaults when possible.
+     - Returns: An updated `MFASessionResult` reflecting the new MFA state and next actions.
+     - Throws: `LoginIDError` if validation fails, the payload is missing/invalid, or the API call fails.
+     */
     public func performAction(
         action: MfaActionAction.Name,
         options: PerformActionOptions?,
