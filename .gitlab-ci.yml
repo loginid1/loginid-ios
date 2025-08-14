@@ -4,7 +4,7 @@
   image: macos-14-xcode-15
 
 stages: 
-  - build
+  - test
 
 build:
   stage: test
