@@ -48,4 +48,24 @@ class DeviceUtils {
             screenWidth: Int64(round(screenSize.width))
         )
     }
+    
+    /**
+     Creates a `User-Agent` string suitable for inclusion in HTTP requests.
+     
+     This method gathers the device’s operating system name, version,
+     and hardware model to form a simple, standardized `User-Agent` header.
+     
+     This format allows backend services to identify the client
+     environment for logging, debugging, or compatibility checks.
+     
+     - Returns: A `String` containing the `User-Agent` value.
+     */
+    @MainActor
+    static func getUserAgent() -> String {
+        let osName = "iOS"
+        let osVersion = UIDevice.current.systemVersion
+        let deviceModel = UIDevice.current.model
+        
+        return "\(osName)/\(osVersion); \(deviceModel)"
+    }
 }
