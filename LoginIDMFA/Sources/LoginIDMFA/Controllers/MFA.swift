@@ -31,6 +31,7 @@ final class MFA : Sendable {
     ) async throws -> MFASessionResult {
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
+        let customUserAgent = await DeviceUtils.getUserAgent()
         let values = BeginFlowOptionDefaults(username: username, options: options)
         
         var walletTrustId: String? = nil
@@ -51,8 +52,7 @@ final class MFA : Sendable {
         
         let mfaNextResult = try await MfaAPI.mfaMfaBegin(
             // Already supplied by device info
-            //TODO: Add a realish userAgent header here after
-            userAgent: "iOS",
+            userAgent: customUserAgent,
             mfaBeginRequestBody: mfaBeginRequestBody,
         )
         
@@ -76,9 +76,15 @@ final class MFA : Sendable {
         case .passkeyReg, .passkeyAuth, .passkeyTx:
             let passkeyOptions = try MFAValidator.validatePasskeyPayload(values.payload)
             switch passkeyOptions {
-            case .creation(let creation):
+            case .creation(var creation):
                 return try await invokeMfaApi(appId: appId, username: info?.username) {
-                    //TODO: add displayName here
+                    // Display name trick
+                    if let displayName = options?.displayName, !displayName.isEmpty {
+                        creation = PublicKeyCredentialCreationOptions(
+                            options: creation,
+                            username: displayName
+                        )
+                    }
                     
                     let credential = try await CreateController().performRequests(
                         publicKey: creation
@@ -97,6 +103,7 @@ final class MFA : Sendable {
                         authorization: values.session,
                     )
                 }
+                
             case .request(let request):
                 return try await invokeMfaApi(appId: appId, username: info?.username) {
                     let credential = try await GetController().performRequests(
@@ -170,7 +177,7 @@ final class MFA : Sendable {
             store.storeDeviceId(performActionResult.deviceId)
             session.setTokenSet(tokenSet)
             
-            return MFASessionResult(info: info, tokenSet: tokenSet)
+            return MFASessionResult(info: successInfo, tokenSet: tokenSet)
         } catch let LoginIDAPIClient.ErrorResponse.error(status, data, urlResponse, underlying)  {
             if status == 401,
                let data = data,

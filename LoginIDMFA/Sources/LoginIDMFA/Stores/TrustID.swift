@@ -30,6 +30,8 @@ final public class TrustID : TrustIDManaging {
         return "LOGINID_TRUST_ID"
     }
     
+    public init () {}
+    
     /// Deletes the stored wallet identity from the Keychain.
     public func deleteTrustId() {
         _ = KeychainManager.removeItem(key: storeKey())

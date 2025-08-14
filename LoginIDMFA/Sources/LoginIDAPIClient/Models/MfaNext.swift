@@ -11,8 +11,8 @@ import Foundation
 public struct MfaNext: Sendable, Codable, ParameterConvertible, Hashable {
 
     public enum Flow: String, Sendable, Codable, CaseIterable {
-        case signin = "signIn"
-        case signup = "signUp"
+        case signin = "signin"
+        case signup = "signup"
         case checkout = "checkout"
     }
     /** The current flow type. */

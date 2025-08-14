@@ -1,0 +1,12 @@
+.macos_saas_runners:
+  tags:
+    - saas-macos-medium-m1
+  image: macos-14-xcode-15
+
+stages: 
+  - test
+
+build:
+  stage: test
+  script:
+    - echo "hello world"

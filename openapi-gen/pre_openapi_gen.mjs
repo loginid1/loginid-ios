@@ -103,6 +103,12 @@ if (data.components && data.components.schemas) {
     }
 
     switch (schemaKey) {
+      case 'MfaNext':
+      case 'Mfa' : {
+        schema.properties.flow.enum = schema.properties.flow.enum.map(value => value.toLowerCase())
+        schema.properties.flow.enum.push('checkout')
+      }
+
       default:
         break;
     }
