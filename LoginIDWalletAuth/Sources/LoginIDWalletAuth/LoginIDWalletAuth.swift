@@ -6,8 +6,9 @@
 //
 
 import LoginIDAPIClient
-import LoginIDCore
-import LoginIDMFA
+
+@_exported import LoginIDCore
+@_exported import LoginIDMFA
 
 /**
  A specialized authentication helper built on top of LoginID's MFA flow, designed for checkout scenarios
@@ -15,8 +16,8 @@ import LoginIDMFA
 
  This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
  */
-final class LoginIDWalletAuth: Sendable {
-    private let mfa: LoginID
+final public class LoginID: Sendable {
+    private let mfa: LoginIDMFA.LoginID
     private let store: WalletAuthStoring
     
     /**
@@ -28,7 +29,7 @@ final class LoginIDWalletAuth: Sendable {
      - Parameter baseUrl: The LoginID environment base URL (e.g., from your environment configuration).
      */
     public init(baseUrl: String) {
-        self.mfa = LoginID(baseUrl: baseUrl)
+        self.mfa = LoginIDMFA.LoginID(baseUrl: baseUrl)
         
         let appId = LoginIDConfig(baseUrl: baseUrl).getAppIdOrEmpty()
         
@@ -43,7 +44,7 @@ final class LoginIDWalletAuth: Sendable {
      - Parameter config: The complete configuration used to initialize the underlying LoginID SDK.
      */
     public init(config: LoginIDConfig) {
-        self.mfa = LoginID(config: config)
+        self.mfa = LoginIDMFA.LoginID(config: config)
         
         let appId = config.getAppIdOrEmpty()
         
@@ -119,10 +120,10 @@ final class LoginIDWalletAuth: Sendable {
      */
     public func performAction(
         action: MfaActionAction.Name,
-        options: PerformActionOptions
+        options: PerformActionOptions?
     ) async throws -> MFASessionResult {
         //TODO: clear this once backend supports this
-        if let txPayload = options.txPayload, action == .passkeyTx {
+        if let txPayload = options?.txPayload, action == .passkeyTx {
             let checkoutId = store.getCheckoutId()
             let traceId = store.getTraceId()
             
@@ -139,9 +140,9 @@ final class LoginIDWalletAuth: Sendable {
         }
         
         let opts = LoginIDMFA.PerformActionOptions(
-            payload: options.payload,
-            autoFill: options.autoFill,
-            displayName: options.displayName,
+            payload: options?.payload,
+            autoFill: options?.autoFill,
+            displayName: options?.displayName,
         )
         
         return try await mfa.performAction(
