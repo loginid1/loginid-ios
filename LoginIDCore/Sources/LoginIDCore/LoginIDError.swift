@@ -1,8 +1,8 @@
 //
 //  LoginIDError.swift
-//  LoginIDMFA
+//  Core
 //
-//  Created by Michael Braga on 2025-07-31.
+//  Created by Michael Braga on 2025-08-14.
 //
 
 import AuthenticationServices
@@ -31,7 +31,7 @@ public final class LoginIDError: NSObject, Error, Codable {
     ///
     /// - Parameter errorResponse: The error response returned from an API call.
     /// - Returns: A parsed `LoginIDError` or `.unknown` if parsing fails.
-    static func fromErrorResponse(from errorResponse: ErrorResponse) -> LoginIDError {
+    public static func fromErrorResponse(from errorResponse: ErrorResponse) -> LoginIDError {
         guard
             case let ErrorResponse.error(_, data?, _, error) = errorResponse
         else {
@@ -53,15 +53,15 @@ public final class LoginIDError: NSObject, Error, Codable {
     ///
     /// - Parameter error: The `ASAuthorizationError` instance to convert.
     /// - Returns: A mapped `LoginIDError`.
-    static func fromErrorASAuthorization(from error: ASAuthorizationError) -> LoginIDError {
-         if #available(iOS 18, *), error.code == ASAuthorizationError.matchedExcludedCredential {
+    public static func fromErrorASAuthorization(from error: ASAuthorizationError) -> LoginIDError {
+        if #available(iOS 18, macOS 15, *), error.code == ASAuthorizationError.matchedExcludedCredential {
              return LoginIDError(
                  msgCode: "auth_passkey_exists",
                  msg: "A passkey already exists on your device"
              )
          }
         
-        if #available(iOS 15, *), error.code == ASAuthorizationError.notInteractive {
+        if #available(iOS 15, macOS 12, *), error.code == ASAuthorizationError.notInteractive {
             return LoginIDError(
                 msgCode: "auth_error_not_interactive",
                 msg: "Authorization process was not interactive."

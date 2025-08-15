@@ -6,6 +6,7 @@
 //
 
 import AuthenticationServices
+import LoginIDCore
 
 /// Handles the creation of a passkeys on iOS,
 /// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.

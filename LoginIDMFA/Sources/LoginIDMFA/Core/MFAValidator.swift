@@ -6,6 +6,7 @@
 //
 
 import LoginIDAPIClient
+import LoginIDCore
 
 /// Utility for validating and resolving the required payload
 /// to perform specific Multi-Factor Authentication (MFA) actions.

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import LoginIDMFA
+import LoginIDWalletAuth
 
 struct ContentView: View {
     @State private var sessionResult: MFASessionResult? = nil
@@ -45,7 +45,6 @@ struct ContentView: View {
                 Task {
                     do {
                         let result = try await lid.beginFlow(
-                            username: username,
                             options: BeginFlowOptions(txPayload: "$100")
                         )
                         sessionResult = result

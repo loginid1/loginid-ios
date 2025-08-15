@@ -5,6 +5,8 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
+import LoginIDCore
+
 /// Handles the lifecycle and signing of a Trust ID
 /// stored securely in the Keychain.
 public protocol TrustIDManaging: Sendable {

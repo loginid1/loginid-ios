@@ -5,6 +5,8 @@
 //  Created by Michael Braga on 2025-08-11.
 //
 
+import LoginIDCore
+
 /// A protocol defining storage operations for persisting and retrieving
 /// the device identifier used in Multi-Factor Authentication (MFA) flows.
 public protocol MFAStoring : Sendable {

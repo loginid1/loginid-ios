@@ -5,8 +5,9 @@
 //  Created by Michael Braga on 2025-07-31.
 //
 
-import Foundation
 import LoginIDAPIClient
+import Foundation
+import LoginIDCore
 
 /// The main entry point for the LoginID MFA SDK package.
 ///
