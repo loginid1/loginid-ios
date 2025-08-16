@@ -31,6 +31,8 @@ It also manages sessions, device trust, and underpins other packages.
 **LoginIDWalletAuth** is a Swift package for iOS apps that combines MFA and identity trust in checkout flows.
 Built on **LoginIDMFA**, it’s optimized for passkey-based transaction confirmation.
 
+---
+
 ## Contact and Support
 
 - **Email**: support@loginid.io
