@@ -6,38 +6,39 @@ authentication, passkey support, and multi-factor authentication (MFA) into iOS 
 ## Structure
 
 ```
-LoginIDMFA     # Native iOS SDK for integrating LoginID's passwordless MFA functionality
+LoginIDCore                 # Shared utilities and core logic for all SDKs
+LoginIDMFA                  # Native iOS SDK for passwordless + MFA
+LoginIDWalletAuth           # Native iOS SDK for specialized wallet-based passkey authentication
 ```
 
-## Tooling
+## Packages Overview 
 
-- OpenAPI Codegen
+### LoginIDCore
 
-### OpenAPI Codegen
-
-This project supports automatic generation of a Swift HTTP client from [LoginID's FIDO2 OpenAPI spec](https://gitlab.com/loginid/software/loginid-fido2/-/blob/main/api/rest/openapi3.yaml?ref_type=heads).
+Common, reusable utilities and core logic used across all SDKs.
 
 ---
 
-**Requirements**:
+### LoginIDMFA
 
-- Node.js must be installed to run the code generation script.
+**LoginIDMFA** is a Swift package for secure MFA on iOS, supporting passkeys, OTP, and external providers.
+It also manages sessions, device trust, and underpins other packages.
 
 ---
 
-To generate the client, run the following command from the root directory:
+### LoginIDWalletAuth
 
-```bash
-cd ./openapi-gen/ && npm install && sh ./openapi-gen/openapi_generate.sh && cd ..
-```
+**LoginIDWalletAuth** is a Swift package for iOS apps that combines MFA and identity trust in checkout flows.
+Built on **LoginIDMFA**, it’s optimized for passkey-based transaction confirmation.
 
-This script installs necessary dependencies and runs a generator that produces the FIDO2 MFA client at:
+## Contact and Support
 
-```bash
-./LoginIDMFA/Sources/LoginIDAPIClient/
-```
+- **Email**: support@loginid.io
+- **Documentation**: https://docs.loginid.io
+- **Forum**: https://forum.loginid.dev
+- **Bug Reports**: https://loginid.dev
+- **Dashboard**: https://dashboard.loginid.io
 
-**NOTE**:
+## License
 
-- The client is generated from the main branch of LoginID's FIDO2 OpenAPI definition.
-- Regenerate the client any time the spec is updated to ensure you're using the latest API contract.
+This project is licensed under the Apache 2.0 License. See LICENSE.md for details.

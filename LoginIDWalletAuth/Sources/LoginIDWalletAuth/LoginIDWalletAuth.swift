@@ -150,4 +150,30 @@ final public class LoginID: Sendable {
             options: opts
         )
     }
+    
+    /**
+     Performs an MFA action using the provided factor and optional payload.
+
+     In a checkout context, this method commonly covers:
+     - **Passkey Registration (`.passkeyReg`)**: Register a new passkey (e.g., WebAuthn) during account creation.
+     - **Passkey Authentication (`.passkeyAuth`)**: signin into a wallet account using a passkey.
+     - **Passkey Transaction Confirmation (`.passkeyTx`)**:  Confirm a specific transaction using a passkey.
+     - **External Authentication (`.external`)**:  Signin with a third-party authentication (e.g. bank login).
+
+     - Parameters:
+       - action: The MFA factor/action to execute.
+
+     - Returns: An updated `MFASessionResult` after performing the requested action.
+
+     - Throws: Any error encountered by the underlying SDK, or validation errors if inputs are missing.
+       ```
+     */
+    public func performAction(
+        action: MfaActionAction.Name,
+    ) async throws -> MFASessionResult {
+        return try await self.performAction(
+            action: action,
+            options: nil
+        )
+    }
 }
