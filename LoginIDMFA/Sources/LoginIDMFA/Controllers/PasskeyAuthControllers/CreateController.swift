@@ -13,9 +13,12 @@ import LoginIDCore
 /// This class wraps the delegate callbacks in Swift's async/await model
 /// using `CheckedContinuation`.
 class CreateController: NSObject, ASAuthorizationControllerDelegate,
-    ASAuthorizationControllerPresentationContextProviding {
+    ASAuthorizationControllerPresentationContextProviding, KeyAuthorizer {
     /// Continuation used to resume execution after the authorization request completes.
     private var createContinuation: CheckedContinuation<CreatePublicKeyResponse, Error>?
+    
+    /// Authorization controller responsible for managing the lifecycle of the passkey creation request.
+    private var authController: ASAuthorizationController?
 
     /**
      Initiates a passkey creation request.
@@ -70,6 +73,8 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
             authController.delegate = self
             authController.presentationContextProvider = self
             authController.performRequests()
+            
+            self.authController = authController
         }
     }
 
@@ -111,4 +116,14 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
         }
         return UIWindow()
     }
-}
+    
+    /**
+     Cancels the current passkey creation request, if any is in progress.
+     
+     - Important: This will dismiss any system UI related to credential creation
+       and terminate the current authorization flow.
+     */
+    func cancel() {
+        authController?.cancel()
+    }
+ }
