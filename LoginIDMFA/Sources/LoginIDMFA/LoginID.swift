@@ -14,6 +14,7 @@ import LoginIDCore
 /// Provides access to all SDK functionality, including configuration,
 /// MFA flows, secure session management, and device trust handling.
 final public class LoginID: Sendable {
+    private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -35,7 +36,16 @@ final public class LoginID: Sendable {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID()
-        mfa = MFA(config: config, store: store, session: session, trustId: trustId)
+        
+        credentials = MainActor.assumeIsolated { KeyCredentialManager() }
+        
+        mfa = MFA(
+            config: config,
+            store: store,
+            session: session,
+            trustId: trustId,
+            credentials: credentials
+        )
     }
     
     /**
@@ -53,7 +63,16 @@ final public class LoginID: Sendable {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID()
-        mfa = MFA(config: config, store: store, session: session, trustId: trustId)
+        
+        credentials = MainActor.assumeIsolated { KeyCredentialManager() }
+        
+        mfa = MFA(
+            config: config,
+            store: store,
+            session: session,
+            trustId: trustId,
+            credentials: credentials
+        )
     }
     
     /**
@@ -72,7 +91,6 @@ final public class LoginID: Sendable {
      */
     public func beginFlow(
         username: String,
-        //NOTE: replace username with displayName is specified
         options: BeginFlowOptions?,
     ) async throws -> MFASessionResult {
         return try await TaskHandler.executeTask {

@@ -12,9 +12,12 @@ import LoginIDCore
 /// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.
 /// Wraps delegate callbacks in Swift's async/await model with `CheckedContinuation`.
 class GetController: NSObject, ASAuthorizationControllerDelegate,
-    ASAuthorizationControllerPresentationContextProviding {
+    ASAuthorizationControllerPresentationContextProviding, KeyAuthorizer {
     /// Continuation used to resume execution after the authorization request completes.
     private var getContinuation: CheckedContinuation<GetPublicKeyResponse, Error>?
+    
+    /// Authorization controller responsible for managing the lifecycle of the passkey creation request.
+    private var authController: ASAuthorizationController?
 
     /**
      Initiates a passkey assertion request.
@@ -66,6 +69,8 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
             } else {
                 authController.performRequests()
             }
+            
+            self.authController = authController
         }
     }
 
@@ -108,5 +113,15 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
             return window
         }
         return UIWindow()
+    }
+    
+    /**
+     Cancels the current passkey creation request, if any is in progress.
+     
+     - Important: This will dismiss any system UI related to credential creation
+       and terminate the current authorization flow.
+     */
+    func cancel() {
+        authController?.cancel()
     }
 }

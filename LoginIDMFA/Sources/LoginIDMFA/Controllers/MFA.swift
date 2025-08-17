@@ -13,6 +13,7 @@ import LoginIDCore
 /// Handles MFA configuration, secure session storage, device trust management, and persistence
 /// of MFA-related data.
 final class MFA : Sendable {
+    private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -26,17 +27,21 @@ final class MFA : Sendable {
        - store: An `MFAStoring` implementation for persisting MFA-related data such as device IDs.
        - session: A `SessionManaging` implementation for handling MFA session tokens.
        - trustId: A `TrustIDManaging` implementation for managing device trust identifiers.
+       - credentials: A `KeyCredentialManaging` implementation that performs
+         credential creation and retrieval flows on the device.
      */
     public init(
         config: LoginIDConfig,
         store: MFAStoring,
         session: SessionManaging,
-        trustId: TrustIDManaging
+        trustId: TrustIDManaging,
+        credentials: KeyCredentialManaging
     ) {
         self.config = config
         self.store = store
         self.session = session
         self.trustId = trustId
+        self.credentials = credentials
     }
     
     /**
@@ -133,8 +138,8 @@ final class MFA : Sendable {
                         )
                     }
                     
-                    let credential = try await CreateController().performRequests(
-                        publicKey: creation
+                    let credential = try await credentials.create(
+                        options: creation
                     )
                     
                     let creationResult = CreationResult(
@@ -153,8 +158,8 @@ final class MFA : Sendable {
                 
             case .request(let request):
                 return try await invokeMfaApi(appId: appId, username: info?.username) {
-                    let credential = try await GetController().performRequests(
-                        publicKey: request,
+                    let credential = try await credentials.get(
+                        options: request,
                         autoFill: options?.autoFill ?? false
                     )
                     
