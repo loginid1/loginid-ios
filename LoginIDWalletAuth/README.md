@@ -62,13 +62,15 @@ swift package update
 ### Setup
 
 ```swift
+import LoginIDWalletAuth
+
 @main
 struct MyApp: App {
-  let private lid: LoginIDWalletAuth
+  let private lid: LoginID
     
   init() {
     let baseUrl = "<YOUR_BASE_URL>"
-    self.lid = LoginIDWalletAuth(baseUrl: baseUrl)
+    self.lid = LoginID(baseUrl: baseUrl)
       
     // Other setup code...
   }
@@ -139,7 +141,7 @@ private func handleBankLogin() async {
 <details>
 <summary>Wallet signin with a passkey</summary>
 
-On the login screen, if beginFlow indicates `.passkeyAuth`, let the user sign in with their passkey:
+On the login screen, if `beginFlow` indicates `.passkeyAuth`, let the user sign in with their passkey:
 
 ```swift
 import LoginIDWalletAuth
@@ -180,7 +182,7 @@ private func autoFillWalletSignIn() async {
 <details>
 <summary>Confirm payment with a passkey</summary>
 
-If beginFlow returned `.passkeyTx`, show the checkout page and let the user confirm the payment directly with their passkey.
+If `beginFlow` returned `.passkeyTx`, show the checkout page and let the user confirm the payment directly with their passkey.
 This acts as both a sign-in and payment confirmation in one step:
 
 ```swift
