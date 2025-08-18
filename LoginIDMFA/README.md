@@ -46,7 +46,7 @@ If you manage dependencies manually in `Package.swift`, add:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/loginid1/LoginIDMFA.git", from: "1.0.0")
+    .package(url: "https://github.com/loginid1/loginid-ios", from: "2.0.0")
 ]
 ```
 
