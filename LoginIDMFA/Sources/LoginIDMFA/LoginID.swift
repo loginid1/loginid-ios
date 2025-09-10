@@ -9,11 +9,11 @@ import LoginIDAPIClient
 import Foundation
 import LoginIDCore
 
-/// The main entry point for the LoginID MFA SDK package.
+/// The main entry point for the LoginIDMFASDK package.
 ///
 /// Provides access to all SDK functionality, including configuration,
 /// MFA flows, secure session management, and device trust handling.
-final public class LoginID: Sendable {
+final public class LoginIDMFASDK: Sendable {
     private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging

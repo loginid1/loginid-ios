@@ -17,7 +17,7 @@ import LoginIDAPIClient
  This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
  */
 final public class LoginID: Sendable {
-    private let mfa: LoginIDMFA.LoginID
+    private let mfa: LoginIDMFA.LoginIDMFASDK
     private let store: WalletAuthStoring
     
     /**
@@ -29,7 +29,7 @@ final public class LoginID: Sendable {
      - Parameter baseUrl: The LoginID environment base URL (e.g., from your environment configuration).
      */
     public init(baseUrl: String) {
-        self.mfa = LoginIDMFA.LoginID(baseUrl: baseUrl)
+        self.mfa = LoginIDMFA.LoginIDMFASDK(baseUrl: baseUrl)
         
         let appId = LoginIDConfig(baseUrl: baseUrl).getAppIdOrEmpty()
         
@@ -44,7 +44,7 @@ final public class LoginID: Sendable {
      - Parameter config: The complete configuration used to initialize the underlying LoginID SDK.
      */
     public init(config: LoginIDConfig) {
-        self.mfa = LoginIDMFA.LoginID(config: config)
+        self.mfa = LoginIDMFA.LoginIDMFASDK(config: config)
         
         let appId = config.getAppIdOrEmpty()
         

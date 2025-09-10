@@ -1,12 +1,56 @@
 .macos_saas_runners:
   tags:
     - saas-macos-medium-m1
-  image: macos-14-xcode-15
+  image: macos-15-xcode-16	
 
 stages: 
   - test
+  - build
 
-build:
+ui-tests:
   stage: test
+  extends: .macos_saas_runners
   script:
     - echo "hello world"
+
+build-core:
+  stage: build
+  extends: .macos_saas_runners
+  script:
+    - cd ./LoginIDCore
+    - sh ./scripts/add-keychain.sh
+    - SCHEME_NAME="LoginIDCore" sh ../scripts/build-framework.sh
+    - mv ./LoginIDCore.xcframework ../LoginIDCore.xcframework
+  artifacts:
+    paths:
+      - LoginIDCore.xcframework
+    when: on_success
+    expire_in: "10 minutes"
+
+build-mfa:
+  stage: build
+  extends: .macos_saas_runners
+  script:
+    - cd ./LoginIDMFA
+    - sh ./scripts/add-keychain.sh
+    - SCHEME_NAME="LoginIDMFA" sh ../scripts/build-framework.sh
+    - mv ./LoginIDMFA.xcframework ../LoginIDMFA.xcframework
+  artifacts:
+    paths:
+      - LoginIDMFA.xcframework
+    when: on_success
+    expire_in: "10 minutes"
+
+build-wallet-auth:
+  stage: build
+  extends: .macos_saas_runners
+  script:
+    - cd ./LoginIDWalletAuth
+    - sh ./scripts/add-keychain.sh
+    - SCHEME_NAME="LoginIDWalletAuth" sh ../scripts/build-framework.sh
+    - mv ./LoginIDWalletAuth.xcframework ../LoginIDWalletAuth.xcframework
+  artifacts:
+    paths:
+      - LoginIDWalletAuth.xcframework
+    when: on_success
+    expire_in: "10 minutes"
