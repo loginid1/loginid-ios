@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var sessionResult: MFASessionResult? = nil
     @State private var username: String = ""
     @State private var displayName: String = ""
+    @State private var txPayload: String = ""
 
     private let lid = LoginID(baseUrl: "")
     
@@ -36,6 +37,12 @@ struct ContentView: View {
                 .disableAutocorrection(true)
             
             TextField("Display Name", text: $displayName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+            
+            TextField("Update TX Payload", text: $txPayload)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
                 .autocapitalization(.none)
@@ -163,9 +170,10 @@ struct ContentView: View {
                 Task {
                     do {
                         let result = try await lid.performAction(
-                            action: .passkeyTx, options: nil
+                            action: .passkeyTx, options: PerformActionOptions( txPayload: txPayload )
                         )
                         sessionResult = result
+                        print(result.payloadSignature)
                     } catch let err as LoginIDError {
                         print(err.message)
                     }
