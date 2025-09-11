@@ -17,7 +17,7 @@ import LoginIDAPIClient
  This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
  */
 final public class LoginID: Sendable {
-    private let mfa: LoginIDMFA.LoginID
+    private let mfa: LoginIDMFA.LoginIDMFAKit
     private let store: WalletAuthStoring
     
     /**
@@ -29,7 +29,7 @@ final public class LoginID: Sendable {
      - Parameter baseUrl: The LoginID environment base URL (e.g., from your environment configuration).
      */
     public init(baseUrl: String) {
-        self.mfa = LoginIDMFA.LoginID(baseUrl: baseUrl)
+        self.mfa = LoginIDMFA.LoginIDMFAKit(baseUrl: baseUrl)
         
         let appId = LoginIDConfig(baseUrl: baseUrl).getAppIdOrEmpty()
         
@@ -44,7 +44,7 @@ final public class LoginID: Sendable {
      - Parameter config: The complete configuration used to initialize the underlying LoginID SDK.
      */
     public init(config: LoginIDConfig) {
-        self.mfa = LoginIDMFA.LoginID(config: config)
+        self.mfa = LoginIDMFA.LoginIDMFAKit(config: config)
         
         let appId = config.getAppIdOrEmpty()
         
@@ -122,27 +122,11 @@ final public class LoginID: Sendable {
         action: MfaActionAction.Name,
         options: PerformActionOptions?
     ) async throws -> MFASessionResult {
-        //TODO: clear this once backend supports this
-        if let txPayload = options?.txPayload, action == .passkeyTx {
-            let checkoutId = store.getCheckoutId()
-            let traceId = store.getTraceId()
-            
-            let opts = LoginIDMFA.BeginFlowOptions(
-                txPayload: txPayload,
-                checkoutId: checkoutId,
-                traceId: traceId,
-            )
-            
-            _ = try await mfa.beginFlow(
-                username: "",
-                options: opts
-            )
-        }
-        
         let opts = LoginIDMFA.PerformActionOptions(
             payload: options?.payload,
             autoFill: options?.autoFill,
             displayName: options?.displayName,
+            txPayload: options?.txPayload
         )
         
         return try await mfa.performAction(

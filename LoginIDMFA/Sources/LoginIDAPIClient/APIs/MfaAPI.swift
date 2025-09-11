@@ -271,6 +271,50 @@ open class MfaAPI {
     }
 
     /**
+     Update the payload to be signed using transaction confirmation.
+     
+     - parameter mfaPayloadUpdateRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: MfaNext
+     */
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    open class func mfaMfaPayloadUpdate(mfaPayloadUpdateRequestBody: MfaPayloadUpdateRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> MfaNext {
+        return try await mfaMfaPayloadUpdateWithRequestBuilder(mfaPayloadUpdateRequestBody: mfaPayloadUpdateRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     Update the payload to be signed using transaction confirmation.
+     - POST /fido2/v2/mfa/payload
+     - Update the payload to be signed.
+     - API Key:
+       - type: apiKey Authorization (HEADER)
+       - name: sessionAuth_header_Authorization
+     - parameter mfaPayloadUpdateRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<MfaNext> 
+     */
+    open class func mfaMfaPayloadUpdateWithRequestBuilder(mfaPayloadUpdateRequestBody: MfaPayloadUpdateRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<MfaNext> {
+        let localVariablePath = "/fido2/v2/mfa/payload"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaPayloadUpdateRequestBody, codableHelper: apiConfiguration.codableHelper)
+
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<MfaNext>.Type = apiConfiguration.requestBuilderFactory.getBuilder()
+
+        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true, apiConfiguration: apiConfiguration)
+    }
+
+    /**
      Verify auth token created by a third party via management API.
      
      - parameter mfaThirdPartyAuthVerifyRequestBody: (body)  
