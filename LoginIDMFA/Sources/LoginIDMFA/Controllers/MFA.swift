@@ -124,6 +124,23 @@ final class MFA : Sendable {
         let info = store.getMFAInfo()
         let values = try MFAValidator.actionValidator(action: action, info: info, options: options)
         
+        if action == .passkeyTx, let txPayload = options?.txPayload {
+            let rest = options?.withoutTxPayload()
+            
+            let mfaPayloadUpdateRequestBody = MfaPayloadUpdateRequestBody(payload: txPayload)
+            
+            let mfaNextResult = try await MfaAPI.mfaMfaPayloadUpdate(
+                mfaPayloadUpdateRequestBody: mfaPayloadUpdateRequestBody
+            )
+            
+            let username = info?.username
+            let newInfo = MFAInfo(result: mfaNextResult, username: username)
+            
+            store.storeMFAInfo(newInfo)
+            
+            return try await performAction(action: action, options: rest)
+        }
+        
         switch action {
         case .passkeyReg, .passkeyAuth, .passkeyTx:
             let passkeyOptions = try MFAValidator.validatePasskeyPayload(values.payload)
