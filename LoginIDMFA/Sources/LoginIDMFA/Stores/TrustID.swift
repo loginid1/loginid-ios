@@ -5,6 +5,7 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
+import Foundation
 import LoginIDCore
 
 /// Handles the lifecycle and signing of a Trust ID
@@ -21,22 +22,53 @@ public protocol TrustIDManaging: Sendable {
     /// - Returns: A signed JWT string.
     /// - Throws: If key access or signing fails.
     func signWithTrustId() throws -> String
+    
+    /// Signs and returns a Trust ID.
+    ///
+    /// Reuses the existing key pair if available; otherwise,
+    /// generates and stores a new ES256 key pair.
+    ///
+    /// - Returns: A signed JWT string.
+    /// - Throws: If key access or signing fails.
+    func signWithTrustId(username: String?) throws -> String
 }
 
 /// A helper type that manages the lifecycle of a wallet identity using a cryptographic key stored in the Keychain.
 final public class TrustID : TrustIDManaging {
+    private let appId: String
+    private let service = "loginid.com.trustid"
+    private let anonymousUsername = ""
+
     /// Builds the unique key used to store the wallet identity in the Keychain.
     ///
     /// - Returns: A Keychain-safe string based on the app ID.
     private func storeKey() -> String {
-        return "LOGINID_TRUST_ID"
+        return "com.loginid.trustId.\(appId)"
     }
     
-    public init () {}
+    /// Builds the account identifier used to store a Trust ID record in the Keychain.
+    ///
+    /// The account key combines the application ID and username to ensure
+    /// Trust IDs are uniquely namespaced per application and user.
+    ///
+    /// - Parameter username: The username associated with the Trust ID.
+    /// - Returns: A unique account identifier suitable for Keychain storage.
+    private func accountKey(username: String) -> String {
+        "\(appId)::\(username)"
+    }
     
-    /// Deletes the stored wallet identity from the Keychain.
+    /**
+     Creates a new `TrustID` instance scoped to a specific application ID.
+     
+     - Parameter appId: A unique application identifier used to namespace the stored device ID.
+     */
+    public init(appId: String) {
+        self.appId = appId
+    }
+
+    /// Deletes all of the stored wallet identity from the Keychain.
     public func deleteTrustId() {
-        _ = KeychainManager.removeItem(key: storeKey())
+        _ = KeychainManager.removeAllItems(service: service)
     }
     
     /// Signs a new or existing Trust ID using its associated private key.
@@ -45,14 +77,52 @@ final public class TrustID : TrustIDManaging {
     ///
     /// - Returns: A signed JWT representing the trust ID.
     public func signWithTrustId() throws -> String {
-        if let data = KeychainManager.getItem(key: storeKey()) {
-            let keyPair = try KeyPair.fromData(data)
-            let payload = toTrustIdPayload()
-            let trustId = try signJwtWithJwk(payload: payload, keyPair: keyPair)
-            return trustId
+        // Find most recently used TrustID for this app.
+        if let record = try getMostRecentlyUsedTrustId() {
+            return try sign(record: record.record, account: record.account)
         }
-        
-        return try setTrustId()
+
+        // No TrustIDs exist for this app yet.
+        return try signWithTrustId(username: nil)
+    }
+    
+    /// Signs a Trust ID for the specified username.
+    ///
+    /// If a Trust ID record already exists for the provided username,
+    /// the existing record is reused and its last-used timestamp is updated.
+    /// Otherwise, a new Trust ID record and key pair are created and stored.
+    ///
+    /// - Parameter username: The username associated with the Trust ID.
+    ///   If `nil`, an anonymous Trust ID is used.
+    /// - Returns: A signed JWT representing the Trust ID.
+    /// - Throws: If Keychain access, serialization, or signing fails.
+    public func signWithTrustId(username: String?) throws -> String {
+        let normalizedUsername = username ?? anonymousUsername
+        let account = accountKey(username: normalizedUsername)
+
+        if let data = KeychainManager.getItem(
+            service: service,
+            account: account
+        ) {
+            var record = try JSONDecoder().decode(
+                TrustIDRecord.self,
+                from: data
+            )
+
+            record.lastUsedAt = Date()
+
+            let updatedData = try JSONEncoder().encode(record)
+
+            _ = KeychainManager.updateItem(
+                service: service,
+                account: account,
+                data: updatedData
+            )
+
+            return try sign(record: record, account: account)
+        }
+
+        return try createAndSign(username: normalizedUsername)
     }
     
     /// Generates a new Trust ID, signs it, and persists it to the Keychain.
@@ -95,5 +165,102 @@ final public class TrustID : TrustIDManaging {
         let signature = try keyPair.signWithES256PrivateKey(unsignedToken)
         
         return unsignedToken + "." + signature
+    }
+    
+    /// Creates and stores a new Trust ID record for the specified username,
+    /// then signs and returns a Trust ID JWT.
+    ///
+    /// A new ES256 key pair is generated and persisted alongside metadata
+    /// describing the Trust ID record.
+    ///
+    /// - Parameter username: The username associated with the new Trust ID.
+    /// - Returns: A signed JWT representing the newly created Trust ID.
+    /// - Throws: If key generation, encoding, persistence, or signing fails.
+    private func createAndSign(username: String) throws -> String {
+        let keyPair = CryptoUtils.generateES256KeyPair()
+        let keyPairData = try keyPair.toData()
+
+        let record = TrustIDRecord(
+            id: UUID().uuidString,
+            appId: appId,
+            username: username,
+            keyPair: keyPairData,
+            lastUsedAt: Date(),
+            valid: false
+        )
+
+        let data = try JSONEncoder().encode(record)
+
+        _ = KeychainManager.setItem(
+            service: service,
+            account: accountKey(username: username),
+            data: data
+        )
+
+        return try sign(record: record, account: accountKey(username: username))
+    }
+    
+    /// Signs a Trust ID record using its associated private key.
+    ///
+    /// The key pair is reconstructed from the stored record and used to
+    /// produce a signed JWT payload.
+    ///
+    /// - Parameters:
+    ///   - record: The Trust ID record containing the stored key material.
+    ///   - account: The Keychain account identifier associated with the record.
+    /// - Returns: A signed JWT representing the Trust ID.
+    /// - Throws: If key reconstruction or signing fails.
+    private func sign(record: TrustIDRecord, account: String) throws -> String {
+        let keyPair = try KeyPair.fromData(record.keyPair)
+
+        let payload = toTrustIdPayload()
+
+        return try signJwtWithJwk(
+            payload: payload,
+            keyPair: keyPair
+        )
+    }
+    
+    /// Retrieves the most recently used Trust ID record for the current application.
+    ///
+    /// Only records associated with the current application ID are considered.
+    /// The record with the most recent `lastUsedAt` value is returned.
+    ///
+    /// - Returns: A tuple containing the Trust ID record and its Keychain account
+    ///   identifier, or `nil` if no matching records exist.
+    /// - Throws: If stored records cannot be accessed from the Keychain.
+    private func getMostRecentlyUsedTrustId() throws -> (record: TrustIDRecord, account: String)? {
+        guard let items = KeychainManager.getAllItems(
+            service: service
+        ) else {
+            return nil
+        }
+
+        let records = items.compactMap {
+            item -> (record: TrustIDRecord, account: String)? in
+
+            guard
+                let data = item[kSecValueData as String] as? Data,
+                let account = item[kSecAttrAccount as String] as? String
+            else {
+                return nil
+            }
+
+            guard account.hasPrefix("\(appId)::") else {
+                return nil
+            }
+
+            guard let record = try? JSONDecoder()
+                .decode(TrustIDRecord.self, from: data)
+            else {
+                return nil
+            }
+
+            return (record, account)
+        }
+
+        return records.max {
+            $0.record.lastUsedAt < $1.record.lastUsedAt
+        }
     }
 }

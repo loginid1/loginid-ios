@@ -62,12 +62,12 @@ final class MFAStore: MFAStoring {
     
     /// Returns the full Keychain key name for storing the device ID, namespaced by `appId`.
     private func deviceIdKey() -> String {
-        return "LOGINID_DEVICE_ID_\(appId)"
+        return "com.loginid.deviceId.\(appId)"
     }
     
     /// Returns the full Keychain key name for storing MFA info, namespaced by `appId`.
     private func mfaInfoKey() -> String {
-        return "LOGINID_MFA_INFO_\(appId)"
+        return "com.loginid.mfa.info.\(appId)"
     }
     
     /**
