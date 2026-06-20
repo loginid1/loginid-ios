@@ -186,7 +186,6 @@ final public class TrustID : TrustIDManaging {
             username: username,
             keyPair: keyPairData,
             lastUsedAt: Date(),
-            valid: false
         )
 
         let data = try JSONEncoder().encode(record)

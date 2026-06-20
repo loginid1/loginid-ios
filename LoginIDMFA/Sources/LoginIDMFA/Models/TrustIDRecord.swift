@@ -23,7 +23,4 @@ struct TrustIDRecord: Codable {
 
     /// Timestamp of when this record was last used, to identify the latest active Trust ID used.
     var lastUsedAt: Date
-
-    /// Indicates if the Trust ID has been validated.
-    var valid: Bool
 }
