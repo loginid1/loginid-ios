@@ -83,11 +83,11 @@ final public class LoginID: Sendable {
         let username = options.username ?? ""
         let opts = LoginIDMFA.BeginFlowOptions(
             txPayload: options.txPayload,
-            checkoutId: options.checkoutId,
+            merchantTrustId: options.merchantTrustId,
             traceId: options.traceId,
         )
         
-        store.storeCheckoutId(options.checkoutId)
+        store.storeCheckoutId(options.merchantTrustId)
         store.storeTraceId(options.traceId)
         
         return try await mfa.beginFlow(
