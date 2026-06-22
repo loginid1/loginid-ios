@@ -65,11 +65,12 @@ final class WalletAuthStore: WalletAuthStoring {
     /// Returns the full Keychain key name for storing the trace ID, namespaced by `appId`.
     private func traceIdKey() -> String {
         return "LOGINID_TRACE_ID_\(appId)"
+        return "com.loginid.traceid.\(appId)"
     }
     
     /// Returns the full Keychain key name for storing the checkout ID, namespaced by `appId`.
     private func checkoutIdKey() -> String {
-        return "LOGINID_CHECKOUT_ID_\(appId)"
+        return "com.loginid.merchanttrustid.\(appId)"
     }
     
     /**
