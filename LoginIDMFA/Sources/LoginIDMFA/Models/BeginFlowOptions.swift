@@ -39,7 +39,7 @@ public struct BeginFlowOptions {
     /// Merchant-generated identifier for the current checkout session.
     /// Used as a key to retrieve associated trust information and link the session
     /// with wallet-issued identity data.
-    public let checkoutId: String?
+    public let merchantTrustId: String?
     
     /// A unique identifier used to trace and correlate all events associated with a single MFA interaction.
     /// If you don’t provide this, the server may generate one automatically.
@@ -51,13 +51,13 @@ public struct BeginFlowOptions {
         displayName: String? = nil,
         usernameType: User.UsernameType = User.UsernameType.other,
         txPayload: String? = nil,
-        checkoutId: String? = nil,
+        merchantTrustId: String? = nil,
         traceId: String? = nil
     ) {
         self.displayName = displayName
         self.usernameType = usernameType
         self.txPayload = txPayload
-        self.checkoutId = checkoutId
+        self.merchantTrustId = merchantTrustId
         self.traceId = traceId
     }
 }

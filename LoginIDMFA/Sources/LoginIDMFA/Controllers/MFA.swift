@@ -61,24 +61,18 @@ final class MFA : Sendable {
         username: String,
         options: BeginFlowOptions?
     ) async throws -> MFASessionResult {
+        // TODO: add the clear begin stuff here maybe
+        
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
         let customUserAgent = await DeviceUtils.getUserAgent()
-        let values = BeginFlowOptionDefaults(username: username, options: options)
-        
-        var walletTrustId: String? = nil
-        if values.txPayload != nil {
-            walletTrustId = try trustId.signWithTrustId()
-        }
-        
+        let values = BeginFlowOptionDefaults(username: username, options: options, trustId: trustId)
+
         let mfaBeginRequestBody = MfaBeginRequestBody(
             deviceInfo: deviceInfo,
             payload: values.txPayload,
             traceId: values.traceId,
-            trustItems: [
-                "wallet": walletTrustId ?? "",
-                "merchant": values.checkoutId ?? "",
-            ],
+            trustItems: try values.trustItems,
             user: values.user,
         )
         

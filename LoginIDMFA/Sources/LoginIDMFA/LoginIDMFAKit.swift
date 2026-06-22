@@ -34,7 +34,7 @@ final public class LoginIDMFAKit: Sendable {
         
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
-        trustId = TrustID()
+        trustId = TrustID(appId: appId)
         
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -61,7 +61,7 @@ final public class LoginIDMFAKit: Sendable {
         
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
-        trustId = TrustID()
+        trustId = TrustID(appId: appId)
         
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         

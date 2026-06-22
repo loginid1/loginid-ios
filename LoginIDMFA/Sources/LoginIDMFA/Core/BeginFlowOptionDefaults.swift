@@ -6,6 +6,7 @@
 //
 
 import LoginIDAPIClient
+import LoginIDCore
 
 /// Provides defaulted accessors for `BeginFlowOptions`,
 /// falling back to sensible values (such as the provided username)
@@ -16,6 +17,9 @@ final class BeginFlowOptionDefaults {
     
     /// User's username.
     private let username: String
+    
+    /// Trust ID manager for signing.
+    private let trustIdStore: TrustIDManaging
 
     /**
      Creates a new defaults helper for MFA flow options.
@@ -23,10 +27,12 @@ final class BeginFlowOptionDefaults {
      - Parameters:
        - username: The username to fall back to if `displayName` is not provided.
        - options: Optional `BeginFlowOptions` from which to read values.
+       - trustId: A `TrustIDManaging` implementation for managing device trust identifiers.
      */
-    public init(username: String, options: BeginFlowOptions?) {
+    public init(username: String, options: BeginFlowOptions?, trustId: TrustIDManaging) {
         self.username = username
         self.options = options
+        self.trustIdStore = trustId
     }
     
     /// The display name to use, falling back to `username` if not provided or empty.
@@ -44,9 +50,32 @@ final class BeginFlowOptionDefaults {
         return options?.txPayload
     }
     
-    /// The checkout opaque session, if provided.
-    var checkoutId: String? {
-        return options?.checkoutId
+    /// A dictionary of trust items for the MFA flow.
+    var trustItems: [String: String] {
+        get throws {
+            let walletId: String
+            if txPayload != nil {
+                walletId = try trustIdStore.signWithTrustId()
+            } else {
+                walletId = ""
+            }
+
+            let merchantId = options?.merchantTrustId ?? ""
+
+            // TODO: Add config useTrustId option here
+            let authId: String
+            if walletId.isEmpty && merchantId.isEmpty && !username.isEmpty {
+                authId = try trustIdStore.signWithTrustId(username: username)
+            } else {
+                authId = ""
+            }
+
+            return [
+                "auth": authId,
+                "wallet": walletId,
+                "merchant": merchantId,
+            ]
+        }
     }
     
     /// The trace identifier for correlating MFA events, if provided.
