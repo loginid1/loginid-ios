@@ -14,6 +14,8 @@ public struct MfaNext: Sendable, Codable, ParameterConvertible, Hashable {
         case signin = "signin"
         case signup = "signup"
         case checkout = "checkout"
+        case signUp = "signUp"
+        case signIn = "signIn"
     }
     /** The current flow type. */
     public var flow: Flow?
