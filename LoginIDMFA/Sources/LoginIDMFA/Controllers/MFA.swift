@@ -61,17 +61,16 @@ final class MFA : Sendable {
         username: String,
         options: BeginFlowOptions?
     ) async throws -> MFASessionResult {
-        // TODO: add the clear begin stuff here maybe
-        
-        let deviceId = store.getDeviceId()
-        let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
-        let customUserAgent = await DeviceUtils.getUserAgent()
         let values = BeginFlowOptionDefaults(
             username: username,
             options: options,
             trustId: trustId,
-            config: config
+            config: config,
+            store: store
         )
+        
+        let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: values.deviceId)
+        let customUserAgent = await DeviceUtils.getUserAgent()
 
         let mfaBeginRequestBody = MfaBeginRequestBody(
             deviceInfo: deviceInfo,

@@ -85,6 +85,7 @@ final public class LoginID: Sendable {
             txPayload: options.txPayload,
             merchantTrustId: options.merchantTrustId,
             traceId: options.traceId,
+            deviceId: options.deviceId,
         )
         
         store.storeCheckoutId(options.merchantTrustId)

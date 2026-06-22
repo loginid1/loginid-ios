@@ -24,6 +24,9 @@ final class BeginFlowOptionDefaults {
     /// LoginID SDK configuration.
     private let config: LoginIDConfig
 
+    /// MFA store.
+    private let store: MFAStoring
+
     /**
      Creates a new defaults helper for MFA flow options.
      
@@ -32,12 +35,25 @@ final class BeginFlowOptionDefaults {
        - options: Optional `BeginFlowOptions` from which to read values.
        - trustId: A `TrustIDManaging` implementation for managing device trust identifiers.
        - config: The `LoginIDConfig` containing API configuration values.
+       - store: An `MFAStoring` implementation for persisting MFA-related data.
      */
-    public init(username: String, options: BeginFlowOptions?, trustId: TrustIDManaging, config: LoginIDConfig) {
+    public init(
+        username: String,
+        options: BeginFlowOptions?,
+        trustId: TrustIDManaging,
+        config: LoginIDConfig,
+        store: MFAStoring
+    ) {
         self.username = username
         self.options = options
         self.trustIdStore = trustId
         self.config = config
+        self.store = store
+    }
+    
+    /// The device identifier to use, falling back to the stored value if not provided.
+    var deviceId: String? {
+        return options?.deviceId ?? store.getDeviceId()
     }
     
     /// The display name to use, falling back to `username` if not provided or empty.

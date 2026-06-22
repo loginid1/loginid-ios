@@ -45,6 +45,13 @@ public struct BeginFlowOptions {
     /// If you don’t provide this, the server may generate one automatically.
     public let traceId: String?
     
+    /// An identifier for the device used in the authentication process. This property helps determine if
+    /// supported authentications can be proceeded, allowing future authentications to identify the device
+    /// correctly.
+    ///
+    /// Overrides the stored device identifier. If not provided, the SDK uses the stored value.
+    public let deviceId: String?
+    
     // MARK: - Init
     
     public init(
@@ -52,12 +59,14 @@ public struct BeginFlowOptions {
         usernameType: User.UsernameType = User.UsernameType.other,
         txPayload: String? = nil,
         merchantTrustId: String? = nil,
-        traceId: String? = nil
+        traceId: String? = nil,
+        deviceId: String? = nil
     ) {
         self.displayName = displayName
         self.usernameType = usernameType
         self.txPayload = txPayload
         self.merchantTrustId = merchantTrustId
         self.traceId = traceId
+        self.deviceId = deviceId
     }
 }
