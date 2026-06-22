@@ -21,6 +21,9 @@ final class BeginFlowOptionDefaults {
     /// Trust ID manager for signing.
     private let trustIdStore: TrustIDManaging
 
+    /// LoginID SDK configuration.
+    private let config: LoginIDConfig
+
     /**
      Creates a new defaults helper for MFA flow options.
      
@@ -28,11 +31,13 @@ final class BeginFlowOptionDefaults {
        - username: The username to fall back to if `displayName` is not provided.
        - options: Optional `BeginFlowOptions` from which to read values.
        - trustId: A `TrustIDManaging` implementation for managing device trust identifiers.
+       - config: The `LoginIDConfig` containing API configuration values.
      */
-    public init(username: String, options: BeginFlowOptions?, trustId: TrustIDManaging) {
+    public init(username: String, options: BeginFlowOptions?, trustId: TrustIDManaging, config: LoginIDConfig) {
         self.username = username
         self.options = options
         self.trustIdStore = trustId
+        self.config = config
     }
     
     /// The display name to use, falling back to `username` if not provided or empty.
@@ -62,9 +67,8 @@ final class BeginFlowOptionDefaults {
 
             let merchantId = options?.merchantTrustId ?? ""
 
-            // TODO: Add config useTrustId option here
             let authId: String
-            if walletId.isEmpty && merchantId.isEmpty && !username.isEmpty {
+            if config.useTrustId, walletId.isEmpty, merchantId.isEmpty, !username.isEmpty {
                 authId = try trustIdStore.signWithTrustId(username: username)
             } else {
                 authId = ""

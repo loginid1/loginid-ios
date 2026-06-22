@@ -66,7 +66,12 @@ final class MFA : Sendable {
         let deviceId = store.getDeviceId()
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
         let customUserAgent = await DeviceUtils.getUserAgent()
-        let values = BeginFlowOptionDefaults(username: username, options: options, trustId: trustId)
+        let values = BeginFlowOptionDefaults(
+            username: username,
+            options: options,
+            trustId: trustId,
+            config: config
+        )
 
         let mfaBeginRequestBody = MfaBeginRequestBody(
             deviceInfo: deviceInfo,
