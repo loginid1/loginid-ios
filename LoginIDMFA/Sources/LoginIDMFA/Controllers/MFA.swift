@@ -96,7 +96,7 @@ final class MFA : Sendable {
         session.logout()
         store.storeMFAInfo(info)
         
-        return MFASessionResult(info: info, tokenSet: nil, trustSet: nil)
+        return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
     }
     
     /**
@@ -244,14 +244,14 @@ final class MFA : Sendable {
             let performActionResult = try await fn()
             let info = store.getMFAInfo()
             let successInfo = MFAInfo(username: username, flow: info?.flow)
-            let tokenSet = TokenSet(result: performActionResult)
+            let mfaData = MFAData(result: performActionResult)
             let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
             store.storeDeviceId(performActionResult.deviceId)
-            session.setTokenSet(tokenSet)
+            session.setTokenSet(mfaData.tokenSet)
             
-            return MFASessionResult(info: successInfo, tokenSet: tokenSet, trustSet: trustSet)
+            return MFASessionResult(info: successInfo, mfaData: mfaData, trustSet: trustSet)
         } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, underlying)  {
             if status == 401,
                let data = data,
@@ -262,7 +262,7 @@ final class MFA : Sendable {
                 
                 store.storeMFAInfo(info)
                 
-                return MFASessionResult(info: info, tokenSet: nil, trustSet: nil)
+                return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
             }
             
             //TODO: Add client-events here after if it got here which means true error

@@ -71,6 +71,12 @@ public struct MFASessionResult: Sendable {
     /// Available only after the MFA session is complete.
     public let walletTrustId: String?
     
+    /// Information about the passkey involved in this MFA session,
+    /// including passkey creation or authentication results when applicable.
+    ///
+    /// Available only after the MFA session is complete.
+    public let passkeyInfo: PasskeyInfo?
+    
     /// The next recommended MFA factor action to take.
     /// Indicates which MFA factor the user should complete next in order to proceed.
     public let nextAction: MfaActionAction.Name?
@@ -86,10 +92,11 @@ public struct MFASessionResult: Sendable {
      
      - Parameters:
        - info: Optional `MFAInfo` containing current MFA state and available actions.
-       - tokenSet: Optional `TokenSet` containing authentication tokens.
+       - mfaData: Optional `MFAData` containing authentication tokens and passkey information.
        - trustSet: Optional `TrustSet` containing checkout trust tokens from LoginID.
      */
-    public init(info: MFAInfo?, tokenSet: TokenSet?, trustSet: TrustSet?) {
+    public init(info: MFAInfo?, mfaData: MFAData?, trustSet: TrustSet?) {
+        let tokenSet = mfaData?.tokenSet
         self.flow = info?.flow
         self.username = info?.username
         self.session = info?.session
@@ -102,9 +109,11 @@ public struct MFASessionResult: Sendable {
         if self.isComplete {
             self.merchantTrustId = trustSet?.merchantTrustId
             self.walletTrustId = trustSet?.walletTrustId
+            self.passkeyInfo = mfaData?.passkeyInfo
         } else {
             self.merchantTrustId = nil
             self.walletTrustId = nil
+            self.passkeyInfo = nil
         }
         
         let priority: [MfaActionAction.Name] = [
