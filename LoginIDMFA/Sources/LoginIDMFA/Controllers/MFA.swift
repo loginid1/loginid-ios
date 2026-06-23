@@ -61,6 +61,8 @@ final class MFA : Sendable {
         username: String,
         options: BeginFlowOptions?
     ) async throws -> MFASessionResult {
+        store.clearTrustSet()
+        
         let values = BeginFlowOptionDefaults(
             username: username,
             options: options,
@@ -86,12 +88,15 @@ final class MFA : Sendable {
             mfaBeginRequestBody: mfaBeginRequestBody,
         )
         
+        let trustIds = TrustTokenFinder.findTrustTokens(result: mfaNextResult)
+        store.storeTrustSet(trustIds)
+        
         let info = MFAInfo(result: mfaNextResult, username: username)
         
         session.logout()
         store.storeMFAInfo(info)
         
-        return MFASessionResult(info: info, tokenSet: nil)
+        return MFASessionResult(info: info, tokenSet: nil, trustSet: nil)
     }
     
     /**
@@ -240,12 +245,13 @@ final class MFA : Sendable {
             let info = store.getMFAInfo()
             let successInfo = MFAInfo(username: username, flow: info?.flow)
             let tokenSet = TokenSet(result: performActionResult)
+            let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
             store.storeDeviceId(performActionResult.deviceId)
             session.setTokenSet(tokenSet)
             
-            return MFASessionResult(info: successInfo, tokenSet: tokenSet)
+            return MFASessionResult(info: successInfo, tokenSet: tokenSet, trustSet: trustSet)
         } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, underlying)  {
             if status == 401,
                let data = data,
@@ -256,7 +262,7 @@ final class MFA : Sendable {
                 
                 store.storeMFAInfo(info)
                 
-                return MFASessionResult(info: info, tokenSet: nil)
+                return MFASessionResult(info: info, tokenSet: nil, trustSet: nil)
             }
             
             //TODO: Add client-events here after if it got here which means true error

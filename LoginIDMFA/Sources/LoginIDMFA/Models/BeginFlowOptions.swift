@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-08-11.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Options for beginning Multi-Factor Authentication (MFA).
 public struct BeginFlowOptions {

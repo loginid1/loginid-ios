@@ -48,6 +48,29 @@ public struct MFASessionResult: Sendable {
     /// Ensures that the authentication data has not been tampered with.
     public let payloadSignature: String?
     
+    /// A signed trust token representing a trusted relationship between the merchant
+    /// and the user's wallet.
+    ///
+    /// This value is issued by LoginID after the merchant trust relationship has
+    /// been successfully verified during a checkout authentication flow.
+    ///
+    /// The value may be verified by backend services using LoginID
+    /// [token verification](https://docs.loginid.io/backend-integration/verify-token).
+    ///
+    /// Available only after the MFA session is complete.
+    public let merchantTrustId: String?
+    
+    /// A signed trust token representing a trusted wallet.
+    ///
+    /// This value is issued by LoginID after the wallet trust relationship has
+    /// been successfully verified during a checkout authentication flow.
+    ///
+    /// The value may be verified by backend services using LoginID
+    /// [token verification](https://docs.loginid.io/backend-integration/verify-token).
+    ///
+    /// Available only after the MFA session is complete.
+    public let walletTrustId: String?
+    
     /// The next recommended MFA factor action to take.
     /// Indicates which MFA factor the user should complete next in order to proceed.
     public let nextAction: MfaActionAction.Name?
@@ -64,8 +87,9 @@ public struct MFASessionResult: Sendable {
      - Parameters:
        - info: Optional `MFAInfo` containing current MFA state and available actions.
        - tokenSet: Optional `TokenSet` containing authentication tokens.
+       - trustSet: Optional `TrustSet` containing checkout trust tokens from LoginID.
      */
-    public init(info: MFAInfo?, tokenSet: TokenSet?) {
+    public init(info: MFAInfo?, tokenSet: TokenSet?, trustSet: TrustSet?) {
         self.flow = info?.flow
         self.username = info?.username
         self.session = info?.session
@@ -74,6 +98,14 @@ public struct MFASessionResult: Sendable {
         self.refreshToken = tokenSet?.refreshToken
         self.payloadSignature = tokenSet?.payloadSignature
         self.isComplete = (tokenSet?.accessToken != nil) || (tokenSet?.payloadSignature != nil)
+        
+        if self.isComplete {
+            self.merchantTrustId = trustSet?.merchantTrustId
+            self.walletTrustId = trustSet?.walletTrustId
+        } else {
+            self.merchantTrustId = nil
+            self.walletTrustId = nil
+        }
         
         let priority: [MfaActionAction.Name] = [
             .passkeyReg, .passkeyAuth, .passkeyTx, .otpSms, .otpEmail, .external
