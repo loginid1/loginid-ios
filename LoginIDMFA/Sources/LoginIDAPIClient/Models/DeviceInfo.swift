@@ -12,6 +12,7 @@ public struct DeviceInfo: Sendable, Codable, ParameterConvertible, Hashable {
 
     public enum ClientType: String, Sendable, Codable, CaseIterable {
         case browser = "browser"
+        case webview = "webview"
         case other = "other"
     }
     /** Client name */

@@ -62,7 +62,7 @@ final class BeginFlowOptionDefaults {
     }
     
     /// The type of username validation to use, defaulting to `.other`.
-    var usernameType: User.UsernameType {
+    var usernameType: UsernameType {
         return options?.usernameType ?? .other
     }
     
@@ -104,11 +104,11 @@ final class BeginFlowOptionDefaults {
     }
     
     /// A `User` object constructed from the resolved defaults.
-    var user: User {
-        return User(
+    var user: MfaUser {
+        return MfaUser(
             displayName: displayName,
             username: username,
-            usernameType: usernameType,
+            usernameType: usernameType.rawValue,
         )
     }
 }

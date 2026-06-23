@@ -15,7 +15,7 @@ public struct BeginFlowOptions {
     
     /// The type of username validation to be used.
     /// Defaults to `.other` and is omitted from the payload when `.other`.
-    public let usernameType: User.UsernameType
+    public let usernameType: UsernameType
     
     /// A string representing transaction details for confirmation during MFA.
     /// This can be plain text or a JSON-formatted string for structured details.
@@ -56,7 +56,7 @@ public struct BeginFlowOptions {
     
     public init(
         displayName: String? = nil,
-        usernameType: User.UsernameType = User.UsernameType.other,
+        usernameType: UsernameType = UsernameType.other,
         txPayload: String? = nil,
         merchantTrustId: String? = nil,
         traceId: String? = nil,

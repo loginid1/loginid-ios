@@ -51,6 +51,44 @@ open class MfaAPI {
     }
 
     /**
+     Begin and appropriate flow for the provided username.
+     
+     - parameter mfaDiscoverRequestBody: (body)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: Void
+     */
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    open class func mfaMfaDiscover(mfaDiscoverRequestBody: MfaDiscoverRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) {
+        return try await mfaMfaDiscoverWithRequestBuilder(mfaDiscoverRequestBody: mfaDiscoverRequestBody, apiConfiguration: apiConfiguration).execute().body
+    }
+
+    /**
+     Begin and appropriate flow for the provided username.
+     - POST /fido2/v2/mfa/discover
+     - Perform discovery if trustID and/or checkoutID are known to the system.
+     - parameter mfaDiscoverRequestBody: (body)  
+     - parameter apiConfiguration: The configuration for the http request.
+     - returns: RequestBuilder<Void> 
+     */
+    open class func mfaMfaDiscoverWithRequestBuilder(mfaDiscoverRequestBody: MfaDiscoverRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Void> {
+        let localVariablePath = "/fido2/v2/mfa/discover"
+        let localVariableURLString = apiConfiguration.basePath + localVariablePath
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: mfaDiscoverRequestBody, codableHelper: apiConfiguration.codableHelper)
+
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
+
+        let localVariableNillableHeaders: [String: (any Sendable)?] = [
+            "Content-Type": "application/json",
+        ]
+
+        let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
+
+        let localVariableRequestBuilder: RequestBuilder<Void>.Type = apiConfiguration.requestBuilderFactory.getNonDecodableBuilder()
+
+        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: false, apiConfiguration: apiConfiguration)
+    }
+
+    /**
      Request OTP authentication using one of the available methods.
      
      - parameter mfaOtpRequestRequestBody: (body)  
