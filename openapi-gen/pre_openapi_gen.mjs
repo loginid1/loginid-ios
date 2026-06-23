@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml'
 const file = fs.readFileSync('./openapi.yaml', 'utf8')
 const data = yaml.load(file)
 
-const allowedTags = new Set(['mfa'])
+const allowedTags = new Set(['mfa', 'client-events'])
 const allowedSchemas = new Set()
 
 const allowedSecurityHeaders = new Set([
