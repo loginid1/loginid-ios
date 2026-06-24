@@ -10,13 +10,17 @@ import Foundation
 public struct MfaPasskeyAuthRequestBody: Sendable, Codable, ParameterConvertible, Hashable {
 
     public var assertionResult: AuthenticatorAssertionResponse
+    /** Identity provider parameters (e.g., Mitek verification data). */
+    public var providerParams: [String: String]?
 
-    public init(assertionResult: AuthenticatorAssertionResponse) {
+    public init(assertionResult: AuthenticatorAssertionResponse, providerParams: [String: String]? = nil) {
         self.assertionResult = assertionResult
+        self.providerParams = providerParams
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case assertionResult
+        case providerParams
     }
 
     // Encodable protocol methods
@@ -24,6 +28,7 @@ public struct MfaPasskeyAuthRequestBody: Sendable, Codable, ParameterConvertible
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(assertionResult, forKey: .assertionResult)
+        try container.encodeIfPresent(providerParams, forKey: .providerParams)
     }
 }
 

@@ -44,6 +44,35 @@ public protocol MFAStoring : Sendable {
      Use this when the MFA flow is completed or intentionally reset.
      */
     func clearMFAInfo()
+    
+    /**
+     Persists the current Trust set information.
+
+     - Parameter trustSet: The `TrustSet` to store. If `nil`, the call is ignored.
+     - Note: The info is encoded to JSON (`UTF-8`) and stored securely in the Keychain.
+     */
+    func storeTrustSet(_ trustSet: TrustSet?)
+    
+    /**
+     Retrieves the stored trust set information, if available.
+
+     - Returns: A decoded `TrustSet` instance, or `nil` if not found or if decoding fails.
+     */
+    func getTrustSet() -> TrustSet?
+
+    /**
+     Removes any persisted trust set information.
+
+     Use this when the MFA flow is completed or intentionally reset.
+     */
+    func clearTrustSet()
+    
+    /**
+     Updates the session property of the stored MFA information.
+
+     - Parameter session: The new session string to store. If `nil`, the session is not updated.
+     */
+    func updateMFASession(_ session: String?)
 }
 
 /// Default Keychain-backed implementation of `MFAStoring`.
@@ -62,12 +91,17 @@ final class MFAStore: MFAStoring {
     
     /// Returns the full Keychain key name for storing the device ID, namespaced by `appId`.
     private func deviceIdKey() -> String {
-        return "LOGINID_DEVICE_ID_\(appId)"
+        return "com.loginid.deviceId.\(appId)"
     }
     
     /// Returns the full Keychain key name for storing MFA info, namespaced by `appId`.
     private func mfaInfoKey() -> String {
-        return "LOGINID_MFA_INFO_\(appId)"
+        return "com.loginid.mfa.info.\(appId)"
+    }
+    
+    /// Returns the full Keychain key name for storing MFA trust set, namespaced by `appId`.
+    private func trustSetKey() -> String {
+        return "com.loginid.mfa.trustset.\(appId)"
     }
     
     /**
@@ -150,5 +184,69 @@ final class MFAStore: MFAStoring {
      */
     func clearMFAInfo() {
         _ = KeychainManager.removeItem(key: mfaInfoKey())
+    }
+    
+    /**
+     Stores the `TrustSet` securely in the Keychain.
+
+     - Parameter trustSet: The `TrustSet` to store. If `nil`, the method does nothing.
+
+     The value is encoded using `JSONCoding.encoder()` from your `TrustSet` type and saved as Data.
+     */
+    func storeTrustSet(_ trustSet: TrustSet?) {
+        guard let trustSet = trustSet else {
+            return
+        }
+
+        do {
+            let data = try trustSet.jsonData()
+            _ = KeychainManager.setItem(key: trustSetKey(), data: data)
+        } catch {
+        }
+    }
+
+    /**
+     Retrieves the stored `TrustSet` from the Keychain.
+
+     - Returns: A decoded `TrustSet` if available and valid; otherwise `nil`.
+     - Behavior on corruption: If stored data cannot be decoded, it is cleared to avoid repeated failures.
+     */
+    func getTrustSet() -> TrustSet? {
+        let key = trustSetKey()
+        guard let data = KeychainManager.getItem(key: key) else {
+            return nil
+        }
+
+        do {
+            return try TrustSet.fromJSON(data)
+        } catch {
+            // Data is corrupt or incompatible; clear and return nil.
+            _ = KeychainManager.removeItem(key: trustSetKey())
+            return nil
+        }
+    }
+
+    /**
+     Clears any stored `TrustSet` from the Keychain.
+     */
+    func clearTrustSet() {
+        _ = KeychainManager.removeItem(key: trustSetKey())
+    }
+    
+    /**
+     Updates the session property of the stored MFA information.
+
+     - Parameter session: The new session string to store. If `nil`, the session is not updated.
+     */
+    func updateMFASession(_ session: String?) {
+        guard let newSession = session, let oldInfo = getMFAInfo() else {
+            return
+        }
+        
+        let newInfo = MFAInfo(
+            info: oldInfo,
+            session: newSession
+        )
+        storeMFAInfo(newInfo)
     }
 }

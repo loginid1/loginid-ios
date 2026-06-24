@@ -4,7 +4,7 @@ import * as yaml from 'js-yaml'
 const file = fs.readFileSync('./openapi.yaml', 'utf8')
 const data = yaml.load(file)
 
-const allowedTags = new Set(['mfa'])
+const allowedTags = new Set(['mfa', 'client-events'])
 const allowedSchemas = new Set()
 
 const allowedSecurityHeaders = new Set([
@@ -107,6 +107,8 @@ if (data.components && data.components.schemas) {
       case 'Mfa' : {
         schema.properties.flow.enum = schema.properties.flow.enum.map(value => value.toLowerCase())
         schema.properties.flow.enum.push('checkout')
+        schema.properties.flow.enum.push('signUp')
+        schema.properties.flow.enum.push('signIn')
       }
 
       default:

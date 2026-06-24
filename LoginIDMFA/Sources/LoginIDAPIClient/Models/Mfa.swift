@@ -14,6 +14,8 @@ public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
         case signin = "signin"
         case signup = "signup"
         case checkout = "checkout"
+        case signup2 = "signUp"
+        case signin2 = "signIn"
     }
     /** An authorization token (JWT) confirming successful authentication. */
     public var accessToken: String
@@ -23,6 +25,7 @@ public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
     public var flow: Flow
     /** An authorization token (JWT) confirming successful authentication. */
     public var idToken: String
+    public var passkeyInfo: AdditionalPasskeyInfo?
     /** Base64 encoded payload object */
     public var payload: String
     /** A digital signature (JWS) of the payload. */
@@ -30,11 +33,12 @@ public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
     /** An authorization token (JWT) confirming successful authentication. */
     public var refreshToken: String
 
-    public init(accessToken: String, deviceId: String? = nil, flow: Flow, idToken: String, payload: String, payloadSignature: String, refreshToken: String) {
+    public init(accessToken: String, deviceId: String? = nil, flow: Flow, idToken: String, passkeyInfo: AdditionalPasskeyInfo? = nil, payload: String, payloadSignature: String, refreshToken: String) {
         self.accessToken = accessToken
         self.deviceId = deviceId
         self.flow = flow
         self.idToken = idToken
+        self.passkeyInfo = passkeyInfo
         self.payload = payload
         self.payloadSignature = payloadSignature
         self.refreshToken = refreshToken
@@ -45,6 +49,7 @@ public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
         case deviceId
         case flow
         case idToken
+        case passkeyInfo
         case payload
         case payloadSignature
         case refreshToken
@@ -58,6 +63,7 @@ public struct Mfa: Sendable, Codable, ParameterConvertible, Hashable {
         try container.encodeIfPresent(deviceId, forKey: .deviceId)
         try container.encode(flow, forKey: .flow)
         try container.encode(idToken, forKey: .idToken)
+        try container.encodeIfPresent(passkeyInfo, forKey: .passkeyInfo)
         try container.encode(payload, forKey: .payload)
         try container.encode(payloadSignature, forKey: .payloadSignature)
         try container.encode(refreshToken, forKey: .refreshToken)

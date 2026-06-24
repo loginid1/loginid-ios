@@ -39,7 +39,7 @@ final class SessionManager : SessionManaging {
     /// Returns the Keychain key used for storing the MFA session token set,
     /// namespaced by the `appId`.
     private func tokenSetKey() -> String {
-        return "LOGINID_MFA_SESSION_SET_\(appId)"
+        return "com.loginid.session.set.\(appId)"
     }
     
     /**

@@ -16,9 +16,9 @@ public struct MfaBeginRequestBody: Sendable, Codable, ParameterConvertible, Hash
     public var traceId: String?
     /** TrustIDs provided with the request */
     public var trustItems: [String: String]?
-    public var user: User?
+    public var user: MfaUser?
 
-    public init(deviceInfo: DeviceInfo? = nil, payload: String? = nil, traceId: String? = nil, trustItems: [String: String]? = nil, user: User? = nil) {
+    public init(deviceInfo: DeviceInfo? = nil, payload: String? = nil, traceId: String? = nil, trustItems: [String: String]? = nil, user: MfaUser? = nil) {
         self.deviceInfo = deviceInfo
         self.payload = payload
         self.traceId = traceId

@@ -49,6 +49,13 @@ public struct MFAInfo : Codable {
         self.session = nil
     }
     
+    public init(info: MFAInfo, session: String?) {
+        self.username = info.username
+        self.flow = info.flow
+        self.next = info.next
+        self.session = session
+    }
+    
     /// Encodes the `MFAInfo` instance into JSON data.
     /// - Throws: An error if encoding fails.
     /// - Returns: Encoded JSON data.

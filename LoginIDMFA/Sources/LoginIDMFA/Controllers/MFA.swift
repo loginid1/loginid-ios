@@ -13,6 +13,7 @@ import LoginIDCore
 /// Handles MFA configuration, secure session storage, device trust management, and persistence
 /// of MFA-related data.
 final class MFA : Sendable {
+    private let clientEvents: ClientEventsServiceProtocol
     private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging
@@ -35,13 +36,15 @@ final class MFA : Sendable {
         store: MFAStoring,
         session: SessionManaging,
         trustId: TrustIDManaging,
-        credentials: KeyCredentialManaging
+        credentials: KeyCredentialManaging,
+        clientEvents: ClientEventsServiceProtocol
     ) {
         self.config = config
         self.store = store
         self.session = session
         self.trustId = trustId
         self.credentials = credentials
+        self.clientEvents = clientEvents
     }
     
     /**
@@ -61,24 +64,24 @@ final class MFA : Sendable {
         username: String,
         options: BeginFlowOptions?
     ) async throws -> MFASessionResult {
-        let deviceId = store.getDeviceId()
-        let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: deviceId)
+        store.clearTrustSet()
+        
+        let values = BeginFlowOptionDefaults(
+            username: username,
+            options: options,
+            trustId: trustId,
+            config: config,
+            store: store
+        )
+        
+        let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: values.deviceId)
         let customUserAgent = await DeviceUtils.getUserAgent()
-        let values = BeginFlowOptionDefaults(username: username, options: options)
-        
-        var walletTrustId: String? = nil
-        if values.txPayload != nil {
-            walletTrustId = try trustId.signWithTrustId()
-        }
-        
+
         let mfaBeginRequestBody = MfaBeginRequestBody(
             deviceInfo: deviceInfo,
             payload: values.txPayload,
             traceId: values.traceId,
-            trustItems: [
-                "wallet": walletTrustId ?? "",
-                "merchant": values.checkoutId ?? "",
-            ],
+            trustItems: try values.trustItems,
             user: values.user,
         )
         
@@ -88,12 +91,15 @@ final class MFA : Sendable {
             mfaBeginRequestBody: mfaBeginRequestBody,
         )
         
+        let trustIds = TrustTokenFinder.findTrustTokens(result: mfaNextResult)
+        store.storeTrustSet(trustIds)
+        
         let info = MFAInfo(result: mfaNextResult, username: username)
         
         session.logout()
         store.storeMFAInfo(info)
         
-        return MFASessionResult(info: info, tokenSet: nil)
+        return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
     }
     
     /**
@@ -241,13 +247,14 @@ final class MFA : Sendable {
             let performActionResult = try await fn()
             let info = store.getMFAInfo()
             let successInfo = MFAInfo(username: username, flow: info?.flow)
-            let tokenSet = TokenSet(result: performActionResult)
+            let mfaData = MFAData(result: performActionResult)
+            let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
             store.storeDeviceId(performActionResult.deviceId)
-            session.setTokenSet(tokenSet)
+            session.setTokenSet(mfaData.tokenSet)
             
-            return MFASessionResult(info: successInfo, tokenSet: tokenSet)
+            return MFASessionResult(info: successInfo, mfaData: mfaData, trustSet: trustSet)
         } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, underlying)  {
             if status == 401,
                let data = data,
@@ -258,14 +265,20 @@ final class MFA : Sendable {
                 
                 store.storeMFAInfo(info)
                 
-                return MFASessionResult(info: info, tokenSet: nil)
+                return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
             }
-            
-            //TODO: Add client-events here after if it got here which means true error
             
             // Rethrow same error. Global TaskHandler should catch it.
             throw LoginIDAPIClient.ErrorResponse.error(status, data, nil, underlying)
         } catch {
+            let currentSession = store.getMFAInfo()?.session
+            let updatedSession = try? await clientEvents.submitASAuthorizationErrorEvent(
+                error: error,
+                session: currentSession
+            )
+            
+            store.updateMFASession(updatedSession)
+            
             throw error
         }
     }
