@@ -66,6 +66,13 @@ public protocol MFAStoring : Sendable {
      Use this when the MFA flow is completed or intentionally reset.
      */
     func clearTrustSet()
+    
+    /**
+     Updates the session property of the stored MFA information.
+
+     - Parameter session: The new session string to store. If `nil`, the session is not updated.
+     */
+    func updateMFASession(_ session: String?)
 }
 
 /// Default Keychain-backed implementation of `MFAStoring`.
@@ -224,5 +231,22 @@ final class MFAStore: MFAStoring {
      */
     func clearTrustSet() {
         _ = KeychainManager.removeItem(key: trustSetKey())
+    }
+    
+    /**
+     Updates the session property of the stored MFA information.
+
+     - Parameter session: The new session string to store. If `nil`, the session is not updated.
+     */
+    func updateMFASession(_ session: String?) {
+        guard let newSession = session, let oldInfo = getMFAInfo() else {
+            return
+        }
+        
+        let newInfo = MFAInfo(
+            info: oldInfo,
+            session: newSession
+        )
+        storeMFAInfo(newInfo)
     }
 }

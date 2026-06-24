@@ -13,6 +13,7 @@ import LoginIDCore
 /// Handles MFA configuration, secure session storage, device trust management, and persistence
 /// of MFA-related data.
 final class MFA : Sendable {
+    private let clientEvents: ClientEventsServiceProtocol
     private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging
@@ -35,13 +36,15 @@ final class MFA : Sendable {
         store: MFAStoring,
         session: SessionManaging,
         trustId: TrustIDManaging,
-        credentials: KeyCredentialManaging
+        credentials: KeyCredentialManaging,
+        clientEvents: ClientEventsServiceProtocol
     ) {
         self.config = config
         self.store = store
         self.session = session
         self.trustId = trustId
         self.credentials = credentials
+        self.clientEvents = clientEvents
     }
     
     /**
@@ -265,11 +268,17 @@ final class MFA : Sendable {
                 return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
             }
             
-            //TODO: Add client-events here after if it got here which means true error
-            
             // Rethrow same error. Global TaskHandler should catch it.
             throw LoginIDAPIClient.ErrorResponse.error(status, data, nil, underlying)
         } catch {
+            let currentSession = store.getMFAInfo()?.session
+            let updatedSession = try? await clientEvents.submitASAuthorizationErrorEvent(
+                error: error,
+                session: currentSession
+            )
+            
+            store.updateMFASession(updatedSession)
+            
             throw error
         }
     }

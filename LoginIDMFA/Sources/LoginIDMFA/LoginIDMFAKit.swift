@@ -13,6 +13,7 @@ import LoginIDCore
 /// Provides access to all SDK functionality, including configuration,
 /// MFA flows, secure session management, and device trust handling.
 final public class LoginIDMFAKit: Sendable {
+    private let clientEvents: ClientEventsServiceProtocol
     private let credentials: KeyCredentialManaging
     private let trustId: TrustIDManaging
     private let session: SessionManaging
@@ -35,6 +36,7 @@ final public class LoginIDMFAKit: Sendable {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID(appId: appId)
+        clientEvents = ClientEventsService(config: config)
         
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -43,7 +45,8 @@ final public class LoginIDMFAKit: Sendable {
             store: store,
             session: session,
             trustId: trustId,
-            credentials: credentials
+            credentials: credentials,
+            clientEvents: clientEvents
         )
     }
     
@@ -62,6 +65,7 @@ final public class LoginIDMFAKit: Sendable {
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID(appId: appId)
+        clientEvents = ClientEventsService(config: config)
         
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -70,7 +74,8 @@ final public class LoginIDMFAKit: Sendable {
             store: store,
             session: session,
             trustId: trustId,
-            credentials: credentials
+            credentials: credentials,
+            clientEvents: clientEvents
         )
     }
     
