@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import LoginIDCore
 
 /// A set of checkout trust tokens.
 public struct TrustSet: Codable, Sendable {
