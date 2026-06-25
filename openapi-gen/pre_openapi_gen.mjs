@@ -4,7 +4,14 @@ import * as yaml from 'js-yaml'
 const file = fs.readFileSync('./openapi.yaml', 'utf8')
 const data = yaml.load(file)
 
-const allowedTags = new Set(['mfa', 'client-events'])
+const allowedTags = new Set([
+  'reg',
+  'auth',
+  'tx',
+  'passkeys',
+  'mfa',
+  'client-events'
+]);
 const allowedSchemas = new Set()
 
 const allowedSecurityHeaders = new Set([
@@ -110,6 +117,29 @@ if (data.components && data.components.schemas) {
         schema.properties.flow.enum.push('signUp')
         schema.properties.flow.enum.push('signIn')
       }
+
+      case 'AuthInit':
+        schema.required = schema.required.filter((req) => req !== 'assertionOptions');
+        break;
+      
+      case 'Passkey':
+        delete schema.properties.createdAt.format;
+        break;
+
+      case 'PublicKeyCredentialParameters':
+        delete schema.properties.alg.enum;
+        break;
+
+      case 'PublicKeyCredentialRequestOptions':
+      case 'PublicKeyCredentialCreationOptions':
+        delete schema.properties.extensions;
+        break;
+
+      case 'User':
+      case 'UserLogin':
+        delete schema.properties.usernameType.enum;
+        schema.required = schema.required.filter((req) => req !== 'usernameType');
+        break;
 
       default:
         break;
