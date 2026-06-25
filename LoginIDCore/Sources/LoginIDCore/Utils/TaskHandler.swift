@@ -11,7 +11,7 @@ import LoginIDCore
 
 /// A utility for executing asynchronous tasks with centralized error handling,
 /// mapping various error types into `LoginIDError` for consistent downstream processing.
-enum TaskHandler {
+public enum TaskHandler {
     /**
      Executes an asynchronous task and normalizes any thrown errors
      into a `LoginIDError` when possible.
@@ -27,7 +27,7 @@ enum TaskHandler {
      - Returns: The value returned by the task if it succeeds.
      - Throws: A `LoginIDError` appropriate to the error encountered.
      */
-    static func executeTask<T>(
+    public static func executeTask<T>(
         task: @escaping () async throws -> T
     ) async throws -> T {
         do {
