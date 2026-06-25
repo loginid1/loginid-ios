@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
     /// Decodes a Base64URL-encoded string into `Data`.
     ///
     /// This method replaces URL-safe characters (`-` → `+`, `_` → `/`),
