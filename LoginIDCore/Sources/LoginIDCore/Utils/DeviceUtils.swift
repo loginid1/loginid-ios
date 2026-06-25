@@ -1,6 +1,6 @@
 //
 //  DeviceUtils.swift
-//  LoginIDMFA
+//  LoginIDCore
 //
 //  Created by Michael Braga on 2025-08-11.
 //
@@ -10,7 +10,7 @@ import UIKit
 
 /// Utility methods for retrieving device-related metadata
 /// to be used in Multi-Factor Authentication (MFA) flows.
-class DeviceUtils {
+public class DeviceUtils {
     /**
      Creates a `DeviceInfo` object populated with the current device's information.
      
@@ -31,7 +31,7 @@ class DeviceUtils {
      - Note: The `osArch` field is not currently populated due to no direct API for iOS.
      */
     @MainActor
-    static func getDeviceInfo(deviceId: String?) -> DeviceInfo {
+    public static func getDeviceInfo(deviceId: String?) -> DeviceInfo {
         let osName = "iOS"
         let osVersion = UIDevice.current.systemVersion
         let screenSize = UIScreen.main.bounds.size
@@ -61,7 +61,7 @@ class DeviceUtils {
      - Returns: A `String` containing the `User-Agent` value.
      */
     @MainActor
-    static func getUserAgent() -> String {
+    public static func getUserAgent() -> String {
         let osName = "iOS"
         let osVersion = UIDevice.current.systemVersion
         let deviceModel = UIDevice.current.model

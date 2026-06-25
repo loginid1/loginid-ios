@@ -1,6 +1,6 @@
 //
 //  JWTHeader.swift
-//  LoginIDMFA
+//  LoginIDCore
 //
 //  Created by Michael Braga on 2025-08-11.
 //

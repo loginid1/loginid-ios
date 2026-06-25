@@ -1,6 +1,6 @@
 //
 //  TrustIDRecord.swift
-//  LoginIDMFA
+//  LoginIDCore
 //
 //  Created by Michael Braga on 2026-06-18.
 //

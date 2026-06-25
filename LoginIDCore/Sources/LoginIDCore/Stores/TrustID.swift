@@ -1,12 +1,11 @@
 //
 //  TrustID.swift
-//  LoginIDMFA
+//  LoginIDCore
 //
-//  Created by Michael Braga on 2025-08-12.
+//  Created by Michael Braga on 2026-06-25.
 //
 
 import Foundation
-import LoginIDCore
 
 /// Handles the lifecycle and signing of a Trust ID
 /// stored securely in the Keychain.

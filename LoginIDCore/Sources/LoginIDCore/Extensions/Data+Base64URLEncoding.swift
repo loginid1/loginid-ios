@@ -1,13 +1,13 @@
 //
 //  Data+Base64URLEncoding.swift
-//  LoginIDMFA
+//  LoginIDCore
 //
 //  Created by Michael Braga on 2025-08-11.
 //
 
 import Foundation
 
-extension Data {
+public extension Data {
     /// Encodes the data as a Base64URL string (RFC 7515-compliant).
     ///
     /// - Returns: A Base64URL-encoded string.
