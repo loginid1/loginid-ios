@@ -12,12 +12,13 @@ open class AuthAPI {
     /**
      Request OTP code by an authenticated user
      
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: AuthCode
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func authAuthCodeRequest(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> AuthCode {
-        return try await authAuthCodeRequestWithRequestBuilder(apiConfiguration: apiConfiguration).execute().body
+    open class func authAuthCodeRequest(authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> AuthCode {
+        return try await authAuthCodeRequestWithRequestBuilder(authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -27,10 +28,11 @@ open class AuthAPI {
      - Bearer Token:
        - type: http
        - name: jwt_header_Authorization
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<AuthCode> 
      */
-    open class func authAuthCodeRequestWithRequestBuilder(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<AuthCode> {
+    open class func authAuthCodeRequestWithRequestBuilder(authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<AuthCode> {
         let localVariablePath = "/fido2/v2/auth/otp"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters: [String: any Sendable]? = nil
@@ -38,7 +40,7 @@ open class AuthAPI {
         let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)

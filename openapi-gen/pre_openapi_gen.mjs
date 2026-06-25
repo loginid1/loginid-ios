@@ -15,6 +15,7 @@ const allowedTags = new Set([
 const allowedSchemas = new Set()
 
 const allowedSecurityHeaders = new Set([
+  "jwt_header_Authorization",
   "sessionAuth_header_Authorization",
 ]);
 

@@ -51,12 +51,13 @@ open class RegAPI {
      
      - parameter regInitRequestBody: (body)  
      - parameter userAgent: (header) Raw user-agent header as set by a browser (optional)
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RegInit
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func regRegInit(regInitRequestBody: RegInitRequestBody, userAgent: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> RegInit {
-        return try await regRegInitWithRequestBuilder(regInitRequestBody: regInitRequestBody, userAgent: userAgent, apiConfiguration: apiConfiguration).execute().body
+    open class func regRegInit(regInitRequestBody: RegInitRequestBody, userAgent: String? = nil, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> RegInit {
+        return try await regRegInitWithRequestBuilder(regInitRequestBody: regInitRequestBody, userAgent: userAgent, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -67,10 +68,11 @@ open class RegAPI {
        - name: jwt_header_Authorization
      - parameter regInitRequestBody: (body)  
      - parameter userAgent: (header) Raw user-agent header as set by a browser (optional)
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<RegInit> 
      */
-    open class func regRegInitWithRequestBuilder(regInitRequestBody: RegInitRequestBody, userAgent: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<RegInit> {
+    open class func regRegInitWithRequestBuilder(regInitRequestBody: RegInitRequestBody, userAgent: String? = nil, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<RegInit> {
         let localVariablePath = "/fido2/v2/reg/init"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: regInitRequestBody, codableHelper: apiConfiguration.codableHelper)
@@ -80,6 +82,7 @@ open class RegAPI {
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
             "User-Agent": userAgent?.asParameter(codableHelper: apiConfiguration.codableHelper),
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)

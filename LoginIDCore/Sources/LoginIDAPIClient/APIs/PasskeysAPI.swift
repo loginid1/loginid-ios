@@ -13,12 +13,13 @@ open class PasskeysAPI {
      Get AAGUID Metadata
      
      - parameter aaguid: (path) AAGUID identifier 
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Aaguid
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func passkeysAaguidMetadata(aaguid: String, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Aaguid {
-        return try await passkeysAaguidMetadataWithRequestBuilder(aaguid: aaguid, apiConfiguration: apiConfiguration).execute().body
+    open class func passkeysAaguidMetadata(aaguid: String, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> Aaguid {
+        return try await passkeysAaguidMetadataWithRequestBuilder(aaguid: aaguid, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -28,10 +29,11 @@ open class PasskeysAPI {
        - type: http
        - name: jwt_header_Authorization
      - parameter aaguid: (path) AAGUID identifier 
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Aaguid> 
      */
-    open class func passkeysAaguidMetadataWithRequestBuilder(aaguid: String, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Aaguid> {
+    open class func passkeysAaguidMetadataWithRequestBuilder(aaguid: String, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Aaguid> {
         var localVariablePath = "/fido2/v2/passkeys/aaguid/{aaguid}"
         let aaguidPreEscape = "\(APIHelper.mapValueToPathItem(aaguid))"
         let aaguidPostEscape = aaguidPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -42,7 +44,7 @@ open class PasskeysAPI {
         let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -56,12 +58,13 @@ open class PasskeysAPI {
      Delete passkey
      
      - parameter id: (path) Internal passkey identifier 
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func passkeysPasskeyDelete(id: String, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) {
-        return try await passkeysPasskeyDeleteWithRequestBuilder(id: id, apiConfiguration: apiConfiguration).execute().body
+    open class func passkeysPasskeyDelete(id: String, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) {
+        return try await passkeysPasskeyDeleteWithRequestBuilder(id: id, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -71,10 +74,11 @@ open class PasskeysAPI {
        - type: http
        - name: jwt_header_Authorization
      - parameter id: (path) Internal passkey identifier 
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
      */
-    open class func passkeysPasskeyDeleteWithRequestBuilder(id: String, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Void> {
+    open class func passkeysPasskeyDeleteWithRequestBuilder(id: String, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Void> {
         var localVariablePath = "/fido2/v2/passkeys/{id}"
         let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -85,7 +89,7 @@ open class PasskeysAPI {
         let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -100,12 +104,13 @@ open class PasskeysAPI {
      
      - parameter id: (path) Internal passkey identifier 
      - parameter passkeyRenameRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: Void
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func passkeysPasskeyRename(id: String, passkeyRenameRequestBody: PasskeyRenameRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) {
-        return try await passkeysPasskeyRenameWithRequestBuilder(id: id, passkeyRenameRequestBody: passkeyRenameRequestBody, apiConfiguration: apiConfiguration).execute().body
+    open class func passkeysPasskeyRename(id: String, passkeyRenameRequestBody: PasskeyRenameRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) {
+        return try await passkeysPasskeyRenameWithRequestBuilder(id: id, passkeyRenameRequestBody: passkeyRenameRequestBody, authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -116,10 +121,11 @@ open class PasskeysAPI {
        - name: jwt_header_Authorization
      - parameter id: (path) Internal passkey identifier 
      - parameter passkeyRenameRequestBody: (body)  
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<Void> 
      */
-    open class func passkeysPasskeyRenameWithRequestBuilder(id: String, passkeyRenameRequestBody: PasskeyRenameRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Void> {
+    open class func passkeysPasskeyRenameWithRequestBuilder(id: String, passkeyRenameRequestBody: PasskeyRenameRequestBody, authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<Void> {
         var localVariablePath = "/fido2/v2/passkeys/{id}"
         let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -131,6 +137,7 @@ open class PasskeysAPI {
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
             "Content-Type": "application/json",
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
@@ -143,12 +150,13 @@ open class PasskeysAPI {
     /**
      List passkeys of the user
      
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: [Passkey]
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func passkeysPasskeysList(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> [Passkey] {
-        return try await passkeysPasskeysListWithRequestBuilder(apiConfiguration: apiConfiguration).execute().body
+    open class func passkeysPasskeysList(authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> [Passkey] {
+        return try await passkeysPasskeysListWithRequestBuilder(authorization: authorization, apiConfiguration: apiConfiguration).execute().body
     }
 
     /**
@@ -157,10 +165,11 @@ open class PasskeysAPI {
      - Bearer Token:
        - type: http
        - name: jwt_header_Authorization
+     - parameter authorization: (header) JWT Authorization header (optional)
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<[Passkey]> 
      */
-    open class func passkeysPasskeysListWithRequestBuilder(apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<[Passkey]> {
+    open class func passkeysPasskeysListWithRequestBuilder(authorization: String? = nil, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<[Passkey]> {
         let localVariablePath = "/fido2/v2/passkeys"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
         let localVariableParameters: [String: any Sendable]? = nil
@@ -168,7 +177,7 @@ open class PasskeysAPI {
         let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
         let localVariableNillableHeaders: [String: (any Sendable)?] = [
-            :
+            "Authorization": authorization?.asParameter(codableHelper: apiConfiguration.codableHelper),
         ]
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
