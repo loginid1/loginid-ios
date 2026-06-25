@@ -15,6 +15,7 @@ import LoginIDCore
 final class MFA : Sendable {
     private let clientEvents: ClientEventsServiceProtocol
     private let credentials: KeyCredentialManaging
+    private let deviceStore: DeviceStoring
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -34,6 +35,7 @@ final class MFA : Sendable {
     public init(
         config: LoginIDConfig,
         store: MFAStoring,
+        deviceStore: DeviceStoring,
         session: SessionManaging,
         trustId: TrustIDManaging,
         credentials: KeyCredentialManaging,
@@ -41,6 +43,7 @@ final class MFA : Sendable {
     ) {
         self.config = config
         self.store = store
+        self.deviceStore = deviceStore
         self.session = session
         self.trustId = trustId
         self.credentials = credentials
@@ -71,7 +74,7 @@ final class MFA : Sendable {
             options: options,
             trustId: trustId,
             config: config,
-            store: store
+            store: deviceStore
         )
         
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: values.deviceId)
@@ -251,7 +254,7 @@ final class MFA : Sendable {
             let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
-            store.storeDeviceId(performActionResult.deviceId)
+            deviceStore.storeDeviceId(performActionResult.deviceId)
             session.setTokenSet(mfaData.tokenSet)
             
             return MFASessionResult(info: successInfo, mfaData: mfaData, trustSet: trustSet)

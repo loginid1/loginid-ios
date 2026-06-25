@@ -15,6 +15,7 @@ import LoginIDCore
 final public class LoginIDMFAKit: Sendable {
     private let clientEvents: ClientEventsServiceProtocol
     private let credentials: KeyCredentialManaging
+    private let deviceIdStore: DeviceStoring
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -33,6 +34,7 @@ final public class LoginIDMFAKit: Sendable {
         
         let appId = config.getAppIdOrEmpty()
         
+        deviceIdStore = DeviceStore(appId: appId)
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID(appId: appId)
@@ -43,6 +45,7 @@ final public class LoginIDMFAKit: Sendable {
         mfa = MFA(
             config: config,
             store: store,
+            deviceStore: deviceIdStore,
             session: session,
             trustId: trustId,
             credentials: credentials,
@@ -62,6 +65,7 @@ final public class LoginIDMFAKit: Sendable {
 
         let appId = config.getAppIdOrEmpty()
         
+        deviceIdStore = DeviceStore(appId: appId)
         store = MFAStore(appId: appId)
         session = SessionManager(appId: appId)
         trustId = TrustID(appId: appId)
@@ -72,6 +76,7 @@ final public class LoginIDMFAKit: Sendable {
         mfa = MFA(
             config: config,
             store: store,
+            deviceStore: deviceIdStore,
             session: session,
             trustId: trustId,
             credentials: credentials,

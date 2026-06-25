@@ -11,19 +11,6 @@ import LoginIDCore
 /// the device identifier used in Multi-Factor Authentication (MFA) flows.
 public protocol MFAStoring : Sendable {
     /**
-     Persists a device identifier.
-     
-     - Parameter deviceId: The unique identifier for the device. If `nil`, the store should ignore the request.
-     */
-    func storeDeviceId(_ deviceId: String?)
-    /**
-     Retrieves the stored device identifier, if available.
-     
-     - Returns: The stored device identifier as a `String`, or `nil` if none is found.
-     */
-    func getDeviceId() -> String?
-    
-    /**
      Persists the current MFA session information.
 
      - Parameter info: The `MFAInfo` to store. If `nil`, the call is ignored.
@@ -89,11 +76,6 @@ final class MFAStore: MFAStoring {
         self.appId = appId
     }
     
-    /// Returns the full Keychain key name for storing the device ID, namespaced by `appId`.
-    private func deviceIdKey() -> String {
-        return "com.loginid.deviceId.\(appId)"
-    }
-    
     /// Returns the full Keychain key name for storing MFA info, namespaced by `appId`.
     private func mfaInfoKey() -> String {
         return "com.loginid.mfa.info.\(appId)"
@@ -102,41 +84,6 @@ final class MFAStore: MFAStoring {
     /// Returns the full Keychain key name for storing MFA trust set, namespaced by `appId`.
     private func trustSetKey() -> String {
         return "com.loginid.mfa.trustset.\(appId)"
-    }
-    
-    /**
-     Stores the device identifier securely in the Keychain.
-     
-     - Parameter deviceId: The device identifier to store. If `nil`, the method does nothing.
-     
-     This method converts the `String` into UTF-8 encoded `Data` before storing it.
-     */
-    func storeDeviceId(_ deviceId: String?) {
-        guard let deviceId = deviceId else {
-            return
-        }
-
-        let key = deviceIdKey()
-        if let deviceData = deviceId.data(using: .utf8) {
-            _ = KeychainManager.setItem(key: key, data: deviceData)
-        }
-    }
-
-    /**
-     Retrieves the device identifier from the Keychain.
-     
-     - Returns: The stored device identifier as a `String`, or `nil` if not found
-       or if the data cannot be decoded as UTF-8 text.
-     */
-    func getDeviceId() -> String? {
-        let key = deviceIdKey()
-
-        if let deviceData = KeychainManager.getItem(key: key),
-           let deviceId = String(data: deviceData, encoding: .utf8) {
-            return deviceId
-        }
-        
-        return nil
     }
     
     /**
