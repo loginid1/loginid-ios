@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import LoginIDAPIClient
 
 public enum Defaults {
     public static func displayName(_ value: String?, username: String) -> String {

@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Represents the result of a Multi-Factor Authentication (MFA) session.
 ///

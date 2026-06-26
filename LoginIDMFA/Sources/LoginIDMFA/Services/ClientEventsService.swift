@@ -8,7 +8,6 @@
 import AuthenticationServices
 import Foundation
 import LoginIDCore
-import LoginIDAPIClient
 
 /// A service responsible for handling client-side events and analytics.
 struct ClientEventsService: ClientEventsServiceProtocol {

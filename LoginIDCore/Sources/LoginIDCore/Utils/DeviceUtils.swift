@@ -5,7 +5,6 @@
 //  Created by Michael Braga on 2025-08-11.
 //
 
-import LoginIDAPIClient
 import UIKit
 
 /// Utility methods for retrieving device-related metadata

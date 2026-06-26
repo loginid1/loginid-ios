@@ -5,7 +5,6 @@
 //  Created by Michael Braga on 2025-08-11.
 //
 
-import LoginIDAPIClient
 import LoginIDCore
 
 /// Provides the core interface for performing Multi-Factor Authentication (MFA) flows.
@@ -258,7 +257,7 @@ final class MFA : Sendable {
             session.setTokenSet(mfaData.tokenSet)
             
             return MFASessionResult(info: successInfo, mfaData: mfaData, trustSet: trustSet)
-        } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, underlying)  {
+        } catch let ErrorResponse.error(status, data, _, underlying)  {
             if status == 401,
                let data = data,
                let result = try? JSONCoding.decoder().decode(MfaNext.self, from: data),
@@ -272,7 +271,7 @@ final class MFA : Sendable {
             }
             
             // Rethrow same error. Global TaskHandler should catch it.
-            throw LoginIDAPIClient.ErrorResponse.error(status, data, nil, underlying)
+            throw ErrorResponse.error(status, data, nil, underlying)
         } catch {
             let currentSession = store.getMFAInfo()?.session
             let updatedSession = try? await clientEvents.submitASAuthorizationErrorEvent(

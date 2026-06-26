@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "rm -fr ../LoginIDCore/Sources/LoginIDAPIClient/ && node pre_openapi_gen.mjs && openapi-generator-cli generate -i mod-openapi.yaml -g swift6 --additional-properties=responseAs=AsyncAwait,swiftPackagePath=LoginIDAPIClients,objcCompatible -o ../LoginID/generated && mv ../LoginID/generated/LoginIDAPIClients  ../LoginIDCore/Sources/LoginIDAPIClient && rm -fr ../LoginID"
+    "generate": "rm -fr ../LoginIDCore/Sources/LoginIDCore/Generated && node pre_openapi_gen.mjs && openapi-generator-cli generate -i mod-openapi.yaml -g swift6 --additional-properties=responseAs=AsyncAwait,swiftPackagePath=LoginIDAPIClients,objcCompatible -o ../LoginID/generated && mv ../LoginID/generated/LoginIDAPIClients  ../LoginIDCore/Sources/LoginIDCore/Generated && rm -fr ../LoginID"
   },
   "keywords": [],
   "author": "",

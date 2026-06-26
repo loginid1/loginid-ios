@@ -5,7 +5,7 @@
 //  Created by LoginID on 2026-06-24.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// A protocol that defines the interface for the `ClientEventsAPI`.
 /// This protocol is used to enable dependency injection and testing of the `ClientEventsAPI`.

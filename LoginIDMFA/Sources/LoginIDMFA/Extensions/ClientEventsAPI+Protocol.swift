@@ -5,7 +5,7 @@
 //  Created by LoginID on 2026-06-24.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Conforms `ClientEventsAPI` to the `ClientEventsAPIProtocol`.
 /// This extension allows the auto-generated `ClientEventsAPI` to be used

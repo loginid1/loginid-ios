@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2026-06-23.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Represents additional information about a passkey.
 public struct PasskeyInfo: Sendable, Codable, Hashable {

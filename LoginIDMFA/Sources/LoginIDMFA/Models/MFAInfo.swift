@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import LoginIDAPIClient
 import LoginIDCore
 
 /// Represents multi-factor authentication (MFA) information for a user.

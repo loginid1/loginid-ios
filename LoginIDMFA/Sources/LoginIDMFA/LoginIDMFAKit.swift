@@ -5,7 +5,6 @@
 //  Created by Michael Braga on 2025-07-31.
 //
 
-import LoginIDAPIClient
 import Foundation
 import LoginIDCore
 

@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2026-06-23.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Represents the result of a passkey credential creation.
 public struct PasskeyCreationResult: Sendable, Codable, Hashable {

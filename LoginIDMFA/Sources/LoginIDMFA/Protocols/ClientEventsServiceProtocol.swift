@@ -7,7 +7,6 @@
 
 import Foundation
 import LoginIDCore
-import LoginIDAPIClient
 
 /// A protocol that defines the interface for submitting client-side events.
 protocol ClientEventsServiceProtocol: Sendable {

@@ -5,8 +5,6 @@
 //  Created by Michael Braga on 2025-07-31.
 //
 
-import LoginIDAPIClient
-
 @_exported import LoginIDCore
 @_exported import LoginIDMFA
 

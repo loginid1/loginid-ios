@@ -11,7 +11,7 @@ import Foundation
 ///
 /// This enum is used to encapsulate server-side errors, decoding failures, or
 /// other issues encountered during a network request.
-public enum ErrorResponse: Error {
+public enum ErrorResponsee: Error {
     /// Represents an HTTP error response.
     ///
     /// - Parameters:

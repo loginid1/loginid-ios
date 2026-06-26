@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2026-06-23.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 // A utility structure for locating trust tokens within a Mfa Begin response.
 struct TrustTokenFinder {

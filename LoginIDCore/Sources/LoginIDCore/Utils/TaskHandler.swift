@@ -6,7 +6,6 @@
 //
 
 import AuthenticationServices
-import LoginIDAPIClient
 import LoginIDCore
 
 /// A utility for executing asynchronous tasks with centralized error handling,
@@ -36,7 +35,7 @@ public enum TaskHandler {
             throw error
         } catch let error as ASAuthorizationError {
             throw LoginIDError.fromErrorASAuthorization(from: error)
-        } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, _)  {
+        } catch let ErrorResponse.error(status, data, _, _)  {
             if let data = data {
                 let bodyString = String(data: data, encoding: .utf8) ?? "<Non-UTF8 data>"
                 throw LoginIDError(msgCode: "api_error", msg: bodyString)
