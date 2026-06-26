@@ -154,6 +154,55 @@ final class Passkeys : Sendable {
             return AuthResult(fallbackOptions: fallbackOptions)
         }
     }
+
+    /**
+     Confirms a transaction with a passkey.
+
+     This method initiates a transaction confirmation flow, prompts the user to
+     approve the transaction with their passkey, and returns a confirmation token
+     upon success.
+
+     - Parameters:
+       - username: The username of the account holder.
+       - txPayload: A string representing the transaction details to be confirmed.
+       - options: Optional parameters to customize the transaction, such as a nonce or transaction type.
+     - Returns: A `TxConfirmResult` containing the transaction confirmation details.
+     - Throws: A `LoginIDError` if the transaction confirmation fails.
+     */
+    public func confirmTransaction(
+        username: String,
+        txPayload: String,
+        options: ConfirmTransactionOptions?
+    ) async throws -> TxConfirmResult {
+        let nonce = Defaults.nonce(options?.nonce)
+        let txType = Defaults.txType(options?.txType)
+        
+        let txInitRequestBody = TxInitRequestBody(
+            nonce: nonce,
+            txPayload: txPayload,
+            txType: txType,
+            username: username
+        )
+
+        let initRes = try await passkeyApi.txInit(request: txInitRequestBody)
+
+        let credential = try await credentials.get(
+            options: initRes.assertionOptions,
+            autoFill: false
+        )
+
+        let txCompleteRequestBody = TxCompleteRequestBody(
+            authenticatorData: credential.authenticatorData,
+            clientData: credential.clientDataJSON,
+            keyHandle: credential.id,
+            session: initRes.session,
+            signature: credential.signature
+        )
+
+        let result = try await passkeyApi.txComplete(request: txCompleteRequestBody)
+
+        return TxConfirmResult(result: result)
+    }
     
     private func invokePasskeyApi<T>(
         session _: String,

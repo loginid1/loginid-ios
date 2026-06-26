@@ -10,4 +10,6 @@ public protocol LoginIDPasskeyAPI: Sendable {
     func regComplete(request: RegCompleteRequestBody) async throws -> JWT
     func authInit(request: AuthInitRequestBody, userAgent: String?) async throws -> AuthInit
     func authComplete(request: AuthCompleteRequestBody) async throws -> JWT
+    func txInit(request: TxInitRequestBody) async throws -> TxInit
+    func txComplete(request: TxCompleteRequestBody) async throws -> TxComplete
 }

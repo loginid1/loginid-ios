@@ -41,4 +41,12 @@ public struct PasskeyService: LoginIDPasskeyAPI {
     ) async throws -> JWT {
         try await AuthAPI.authAuthComplete(authCompleteRequestBody: request)
     }
+
+    public func txInit(request: TxInitRequestBody) async throws -> TxInit {
+        try await TxAPI.txTxInit(txInitRequestBody: request)
+    }
+
+    public func txComplete(request: TxCompleteRequestBody) async throws -> TxComplete {
+        try await TxAPI.txTxComplete(txCompleteRequestBody: request)
+    }
 }
