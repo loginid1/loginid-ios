@@ -41,6 +41,27 @@ public struct TokenSet : Codable {
         self.payloadSignature = result.payloadSignature
     }
     
+    /**
+     Creates a token set from its individual token values.
+
+     - Parameters:
+       - idToken: The ID token.
+       - accessToken: The access token.
+       - refreshToken: The refresh token.
+       - payloadSignature: The payload signature.
+     */
+    public init(
+        idToken: String?,
+        accessToken: String?,
+        refreshToken: String?,
+        payloadSignature: String?
+    ) {
+        self.idToken = idToken
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+        self.payloadSignature = payloadSignature
+    }
+    
     /// Encodes the `TokenSet` instance into JSON data.
     /// - Throws: An error if encoding fails.
     /// - Returns: Encoded JSON data.

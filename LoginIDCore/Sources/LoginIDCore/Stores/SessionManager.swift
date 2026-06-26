@@ -32,6 +32,16 @@ public protocol SessionManaging: Sendable {
      - Returns: A valid authorization token, or `nil` if none is available.
      */
     func getAuthzToken(authzToken: String?) -> String?
+    
+    /**
+     Stores an access token in the current session.
+
+     If a token set already exists, only its access token is updated. Otherwise,
+     a new token set is created containing just the access token.
+
+     - Parameter accessToken: The access token to store. If `nil`, the method ignores the request.
+     */
+    func setAccessToken(_ accessToken: String?)
 }
 
 /// Default Keychain-backed implementation of `SessionManaging`.
@@ -112,6 +122,31 @@ final public class SessionManager: SessionManaging {
         } catch {
             return nil
         }
+    }
+    
+    /**
+     Stores an access token in the current session.
+
+     If a token set already exists, only its access token is updated. Otherwise,
+     a new token set is created containing just the access token.
+
+     - Parameter accessToken: The access token to store. If `nil`, no action is taken.
+     */
+    public func setAccessToken(_ accessToken: String?) {
+        guard let accessToken else {
+            return
+        }
+
+        let currentTokenSet = getTokenSet()
+
+        let tokenSet = TokenSet(
+            idToken: currentTokenSet?.idToken,
+            accessToken: accessToken,
+            refreshToken: currentTokenSet?.refreshToken,
+            payloadSignature: currentTokenSet?.payloadSignature
+        )
+
+        setTokenSet(tokenSet)
     }
 
     /**
