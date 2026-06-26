@@ -6,12 +6,11 @@
 //
 
 import AuthenticationServices
-import LoginIDCore
 
 /// Handles the assertion of passkeys on iOS,
 /// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.
 /// Wraps delegate callbacks in Swift's async/await model with `CheckedContinuation`.
-class GetController: NSObject, ASAuthorizationControllerDelegate,
+public class GetController: NSObject, ASAuthorizationControllerDelegate,
     ASAuthorizationControllerPresentationContextProviding, KeyAuthorizer {
     /// Continuation used to resume execution after the authorization request completes.
     private var getContinuation: CheckedContinuation<GetPublicKeyResponse, Error>?
@@ -45,13 +44,13 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
                 relyingPartyIdentifier: publicKey.rpId ?? ""
             )
             let platformKeyRequest = platformProvider.createCredentialAssertionRequest(
-                challenge: publicKey.challenge?.base64URLDecode() ?? Data()
+                challenge: publicKey.challenge.base64URLDecode() ?? Data()
             )
 
             platformKeyRequest.allowedCredentials = []
 
             for credential in publicKey.allowCredentials ?? [] {
-                let credentialId = credential.id?.base64URLDecode() ?? Data()
+                let credentialId = credential.id.base64URLDecode() ?? Data()
                 let credentialDescriptor =
                     ASAuthorizationPlatformPublicKeyCredentialDescriptor(
                         credentialID: credentialId
@@ -107,7 +106,7 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
     
     - Returns: The first available window in the connected scenes, or a new `UIWindow` if none found.
     */
-    func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
+    public func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
             return window
@@ -121,7 +120,7 @@ class GetController: NSObject, ASAuthorizationControllerDelegate,
      - Important: This will dismiss any system UI related to credential creation
        and terminate the current authorization flow.
      */
-    func cancel() {
+    public func cancel() {
         authController?.cancel()
     }
 }

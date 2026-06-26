@@ -6,13 +6,12 @@
 //
 
 import AuthenticationServices
-import LoginIDCore
 
 /// Handles the creation of a passkeys on iOS,
 /// using the `ASAuthorizationPlatformPublicKeyCredentialProvider` API.
 /// This class wraps the delegate callbacks in Swift's async/await model
 /// using `CheckedContinuation`.
-class CreateController: NSObject, ASAuthorizationControllerDelegate,
+public class CreateController: NSObject, ASAuthorizationControllerDelegate,
     ASAuthorizationControllerPresentationContextProviding, KeyAuthorizer {
     /// Continuation used to resume execution after the authorization request completes.
     private var createContinuation: CheckedContinuation<CreatePublicKeyResponse, Error>?
@@ -44,20 +43,20 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
             self.createContinuation = continuation
 
             let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(
-                relyingPartyIdentifier: publicKey.rp?.id ?? ""
+                relyingPartyIdentifier: publicKey.rp.id ?? ""
             )
 
             let platformKeyRequest = platformProvider.createCredentialRegistrationRequest(
-                challenge: publicKey.challenge?.base64URLDecode() ?? Data(),
-                name: publicKey.user?.name ?? "",
-                userID: Data(publicKey.user?.id?.utf8 ?? "".utf8)
+                challenge: publicKey.challenge.base64URLDecode() ?? Data(),
+                name: publicKey.user.name ?? "",
+                userID: Data(publicKey.user.id.utf8 ?? "".utf8)
             )
 
             if let excludeCredentials = publicKey.excludeCredentials {
                 var excludeCredentialRequest: [ASAuthorizationPlatformPublicKeyCredentialDescriptor] = []
 
                 for credential in excludeCredentials {
-                    let credentialId = credential.id?.base64URLDecode() ?? Data()
+                    let credentialId = credential.id.base64URLDecode() ?? Data()
                     let credentialDescriptor =
                         ASAuthorizationPlatformPublicKeyCredentialDescriptor(credentialID: credentialId)
                     excludeCredentialRequest.append(credentialDescriptor)
@@ -109,7 +108,7 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
      
      - Returns: The first available window in the connected scenes, or a new `UIWindow` if none found.
      */
-    func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
+    public func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
             return window
@@ -123,7 +122,7 @@ class CreateController: NSObject, ASAuthorizationControllerDelegate,
      - Important: This will dismiss any system UI related to credential creation
        and terminate the current authorization flow.
      */
-    func cancel() {
+    public func cancel() {
         authController?.cancel()
     }
  }

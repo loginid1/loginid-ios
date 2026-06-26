@@ -13,7 +13,7 @@ import AuthenticationServices
  Conformers provide methods for both creating new credentials and retrieving
  existing ones, wrapping platform APIs in Swift's async/await model.
  */
-protocol KeyCredentialManaging: Sendable {
+public protocol KeyCredentialManaging: Sendable {
     /**
      Initiates a passkey creation flow.
      
@@ -48,7 +48,7 @@ protocol KeyCredentialManaging: Sendable {
  in-progress platform authentication or registration flows.
  */
 @MainActor
-protocol KeyAuthorizer {
+public protocol KeyAuthorizer {
     /**
      Cancels the current credential flow, if one is active.
      
@@ -66,9 +66,11 @@ protocol KeyAuthorizer {
  any existing request before starting a new one.
  */
 @MainActor
-final class KeyCredentialManager: KeyCredentialManaging {
+final public class KeyCredentialManager: KeyCredentialManaging {
     /// Tracks the current in-progress authorizer, if any.
     private var authorizer: KeyAuthorizer? = nil
+    
+    public init() {}
     
     /**
      Starts a new credential creation flow, cancelling any active flow first.
@@ -78,7 +80,7 @@ final class KeyCredentialManager: KeyCredentialManaging {
      
      - Returns: A `CreatePublicKeyResponse` containing the resulting credential data.
      */
-    func create(
+    public func create(
         options: PublicKeyCredentialCreationOptions,
     ) async throws -> CreatePublicKeyResponse {
         await cancel()
@@ -97,7 +99,7 @@ final class KeyCredentialManager: KeyCredentialManaging {
      
      - Returns: A `GetPublicKeyResponse` containing the resulting credential data.
      */
-    func get(
+    public func get(
         options: PublicKeyCredentialRequestOptions,
         autoFill: Bool
     ) async throws -> GetPublicKeyResponse {

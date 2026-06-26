@@ -10,7 +10,7 @@ import Foundation
 /// Represents the response from creating a passkey public key credential.
 ///
 /// All properties are Base64URL-encoded strings derived from the raw binary data.
-struct CreatePublicKeyResponse {
+public struct CreatePublicKeyResponse: Sendable {
     /// The credential identifier.
     public let id: String
     

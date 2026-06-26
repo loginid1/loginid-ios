@@ -40,7 +40,7 @@ final public class LoginIDMFAKit: Sendable {
         clientEvents = ClientEventsService(config: config)
         
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
-        
+
         mfa = MFA(
             config: config,
             store: store,
