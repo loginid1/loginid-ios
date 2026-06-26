@@ -36,6 +36,13 @@ public struct PasskeyDetails {
     
     /// Information about the device from which the passkey was last used.
     public let lastUsedFromDevice: DeviceDetails?
+    
+    /// Converts an array of `Passkey` objects to an array of `PasskeyDetails` objects.
+    /// - Parameter passkeys: An array of `Passkey` objects from the core module.
+    /// - Returns: An array of `LoginIDPasskey` objects.
+    public static func fromArray(_ passkeys: [Passkey]) -> [PasskeyDetails] {
+        return passkeys.map(PasskeyDetails.init)
+    }
 
     /// Initializes a new `PasskeyDetails` instance from a given `Passkey`.
     ///

@@ -18,8 +18,10 @@ final public class LoginIDAuthKit: Sendable {
     private let config: LoginIDConfig
     
     private let passkeysController: Passkeys
+    private let passkeyManager: PasskeyManager
     
     private let passkeysService: LoginIDPasskeyAPI
+    private let passkeyManagementService: LoginIDPasskeyManagementAPI
     
     /**
      Creates a new `LoginIDAuth` instance using a base URL string.
@@ -36,6 +38,7 @@ final public class LoginIDAuthKit: Sendable {
         sessionStore = SessionManager(appId: appId)
         trustId = TrustID(appId: appId)
         passkeysService = PasskeyService()
+        passkeyManagementService = PasskeyManagementService()
 
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -45,7 +48,12 @@ final public class LoginIDAuthKit: Sendable {
             sessionStore: sessionStore,
             credentials: credentials,
             trustStore: trustId,
-            passkeyApi: passkeysService,
+            passkeyApi: passkeysService
+        )
+        
+        passkeyManager = PasskeyManager(
+            sessionStore: sessionStore,
+            passkeyApi: passkeyManagementService
         )
     }
 
@@ -115,6 +123,75 @@ final public class LoginIDAuthKit: Sendable {
                 txPayload: txPayload,
                 options: options
             )
+        }
+    }
+    
+    /// This method returns list of passkeys associated with the current user. The user must be fully authorized for this call to succeed.
+    /// - Parameter options: Options for the request, including an optional authorization token.
+    /// - Returns: An array of `LoginIDPasskey` objects.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func listPasskeys(options: ListPasskeysOptions? = nil) async throws -> [PasskeyDetails] {
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.listPasskeys(options: options)
+        }
+    }
+    
+    /// This method returns list of passkeys associated with the current user. The user must be fully authorized for this call to succeed.
+    /// - Parameter authzToken: Authorization token.
+    /// - Returns: An array of `LoginIDPasskey` objects.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func listPasskeys(authzToken: String) async throws -> [PasskeyDetails] {
+        let opts = ListPasskeysOptions(authzToken: authzToken)
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.listPasskeys(options: opts)
+        }
+    }
+
+    /// Renames a specified passkey by ID. The user must be fully authorized for this call to succeed.
+    /// - Parameters:
+    ///   - id: The unique identifier of the passkey to rename.
+    ///   - name: The new name for the passkey.
+    ///   - options: Options for the request, including an optional authorization token.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func renamePasskey(id: String, name: String, options: RenamePasskeyOptions? = nil) async throws {
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.renamePasskey(id: id, name: name, options: options)
+        }
+    }
+    
+    /// Renames a specified passkey by ID. The user must be fully authorized for this call to succeed.
+    /// - Parameters:
+    ///   - id: The unique identifier of the passkey to rename.
+    ///   - name: The new name for the passkey.
+    ///   - authzToken: Authorization token.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func renamePasskey(id: String, name: String, authzToken: String) async throws {
+        let opts = RenamePasskeyOptions(authzToken: authzToken)
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.renamePasskey(id: id, name: name, options: opts)
+        }
+    }
+
+    /// Delete a specified passkey by ID from LoginID. The user must be fully authorized for this call to succeed.
+    /// - Parameters:
+    ///   - id: The unique identifier of the passkey to delete.
+    ///   - options: Options for the request, including an optional authorization token.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func deletePasskey(id: String, options: DeletePasskeyOptions? = nil) async throws {
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.deletePasskey(id: id, options: options)
+        }
+    }
+    
+    /// Delete a specified passkey by ID from LoginID. The user must be fully authorized for this call to succeed.
+    /// - Parameters:
+    ///   - id: The unique identifier of the passkey to delete.
+    ///   - authzToken: Authorization token.
+    /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
+    public func deletePasskey(id: String, authzToken: String) async throws {
+        let opts = DeletePasskeyOptions(authzToken: authzToken)
+        return try await TaskHandler.executeTask {
+            try await self.passkeyManager.deletePasskey(id: id, options: opts)
         }
     }
 }
