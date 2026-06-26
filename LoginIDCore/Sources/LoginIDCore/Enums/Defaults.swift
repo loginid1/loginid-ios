@@ -42,7 +42,7 @@ public enum Defaults {
     }
     
     public static func userLogin(
-        displayName: String?,
+        displayName: String? = nil,
         username: String?,
         usernameType: UsernameType?
     ) -> UserLogin {
@@ -54,7 +54,7 @@ public enum Defaults {
     
     public static func deviceInfo(
         store: DeviceStoring,
-        deviceId: String?
+        deviceId: String? = nil
     ) async -> DeviceInfo {
         return await DeviceUtils.getDeviceInfo(
             deviceId: deviceId ?? store.getDeviceId()

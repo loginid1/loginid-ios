@@ -68,4 +68,22 @@ final public class LoginIDAuthKit: Sendable {
             try await self.passkeysController.createPasskey(username: username, options: opts)
         }
     }
+    
+    public func authenticateWithPasskey(
+        username: String,
+        options: AuthenticateWithPasskeyOptions?
+    ) async throws -> AuthResult {
+        return try await TaskHandler.executeTask {
+            try await self.passkeysController.authenticateWithPasskey(username: username, options: options)
+        }
+    }
+    
+    public func authenticateWithPasskeyAutofill(
+        options: AuthenticateWithPasskeyOptions?
+    ) async throws -> AuthResult {
+        let opts = AuthenticateWithPasskeyOptions(options: options)
+        return try await TaskHandler.executeTask {
+            try await self.passkeysController.authenticateWithPasskey(username: "", options: opts)
+        }
+    }
 }

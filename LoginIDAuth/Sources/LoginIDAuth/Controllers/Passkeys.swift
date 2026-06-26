@@ -76,14 +76,82 @@ final class Passkeys : Sendable {
                 session: initRes.session
             )
             
-            let result = try await RegAPI.regRegComplete(
-                    regCompleteRequestBody: regCompleteRequestBody
-                )
+            let result = try await passkeyApi.regComplete(
+                request: regCompleteRequestBody
+            )
 
             session.setAccessToken(result.jwtAccess)
             deviceStore.storeDeviceId(result.deviceId)
 
             return AuthResult(result: result)
+        }
+    }
+    
+    public func authenticateWithPasskey(
+        username: String,
+        options: AuthenticateWithPasskeyOptions?
+    ) async throws -> AuthResult {
+        let appId = try config.getAppId()
+        let deviceInfo = await Defaults.deviceInfo(store: deviceStore)
+        let trustItems = try Defaults.trustItems(config: config, store: trustId, username: username)
+        let user = Defaults.userLogin(
+            username: username,
+            usernameType: options?.usernameType
+        )
+
+        let authInitRequestBody = AuthInitRequestBody(
+            app: Application(id: appId),
+            deviceInfo: deviceInfo,
+            trustItems: trustItems,
+            user: user
+        )
+
+        let customUserAgent = await DeviceUtils.getUserAgent()
+        
+        let initRes = try await passkeyApi.authInit(
+            request: authInitRequestBody,
+            userAgent: customUserAgent
+        )
+
+        switch initRes.action {
+        case .proceed:
+            guard let publicKey = initRes.assertionOptions, publicKey.isValid else {
+                throw LoginIDError(
+                    msgCode: "passkey_authentication_failed",
+                    msg: "Assertion options not found or invalid"
+                )
+            }
+            
+            return try await invokePasskeyApi(session: initRes.session) {
+                let autofill = Defaults.autoFill(options?.autofill)
+                let credential = try await self.credentials.get(
+                    options: publicKey,
+                    autoFill: autofill
+                )
+
+                let authCompleteRequestBody = AuthCompleteRequestBody(
+                    assertionResult: AuthenticatorAssertionResponse(
+                        authenticatorData: credential.authenticatorData,
+                        clientDataJSON: credential.clientDataJSON,
+                        credentialId: credential.id,
+                        signature: credential.signature,
+                        userHandle: credential.userHandle
+                    ),
+                    session: initRes.session
+                )
+                
+                let result = try await passkeyApi.authComplete(
+                    request: authCompleteRequestBody
+                )
+
+                session.setAccessToken(result.jwtAccess)
+                deviceStore.storeDeviceId(result.deviceId)
+
+                return AuthResult(result: result)
+            }
+        case .crossauth, .fallback:
+            let fallbackOptions = initRes.mergeFallbackMethods()
+            return AuthResult(fallbackOptions: fallbackOptions)
         }
     }
     
