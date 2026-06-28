@@ -19,9 +19,11 @@ final public class LoginIDAuthKit: Sendable {
     
     private let passkeysController: Passkeys
     private let passkeyManager: PasskeyManager
+    private let otpController: OTP
     
     private let passkeysService: LoginIDPasskeyAPI
     private let passkeyManagementService: LoginIDPasskeyManagementAPI
+    private let otpService: LoginIDOTPAPI
     
     /**
      Creates a new `LoginIDAuth` instance using a base URL string.
@@ -39,6 +41,7 @@ final public class LoginIDAuthKit: Sendable {
         trustId = TrustID(appId: appId)
         passkeysService = PasskeyService()
         passkeyManagementService = PasskeyManagementService()
+        otpService = OTPService()
 
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -54,6 +57,11 @@ final public class LoginIDAuthKit: Sendable {
         passkeyManager = PasskeyManager(
             sessionStore: sessionStore,
             passkeyApi: passkeyManagementService
+        )
+        
+        otpController = OTP(
+            sessionStore: sessionStore,
+            otpApi: otpService
         )
     }
 
@@ -127,6 +135,7 @@ final public class LoginIDAuthKit: Sendable {
     }
     
     /// This method returns list of passkeys associated with the current user. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameter options: Options for the request, including an optional authorization token.
     /// - Returns: An array of `LoginIDPasskey` objects.
     /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
@@ -137,6 +146,7 @@ final public class LoginIDAuthKit: Sendable {
     }
     
     /// This method returns list of passkeys associated with the current user. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameter authzToken: Authorization token.
     /// - Returns: An array of `LoginIDPasskey` objects.
     /// - Throws: A `LoginIDError` if the user is not authenticated or the request fails.
@@ -148,6 +158,7 @@ final public class LoginIDAuthKit: Sendable {
     }
 
     /// Renames a specified passkey by ID. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameters:
     ///   - id: The unique identifier of the passkey to rename.
     ///   - name: The new name for the passkey.
@@ -160,6 +171,7 @@ final public class LoginIDAuthKit: Sendable {
     }
     
     /// Renames a specified passkey by ID. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameters:
     ///   - id: The unique identifier of the passkey to rename.
     ///   - name: The new name for the passkey.
@@ -173,6 +185,7 @@ final public class LoginIDAuthKit: Sendable {
     }
 
     /// Delete a specified passkey by ID from LoginID. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameters:
     ///   - id: The unique identifier of the passkey to delete.
     ///   - options: Options for the request, including an optional authorization token.
@@ -184,6 +197,7 @@ final public class LoginIDAuthKit: Sendable {
     }
     
     /// Delete a specified passkey by ID from LoginID. The user must be fully authorized for this call to succeed.
+    ///
     /// - Parameters:
     ///   - id: The unique identifier of the passkey to delete.
     ///   - authzToken: Authorization token.
@@ -192,6 +206,63 @@ final public class LoginIDAuthKit: Sendable {
         let opts = DeletePasskeyOptions(authzToken: authzToken)
         return try await TaskHandler.executeTask {
             try await self.passkeyManager.deletePasskey(id: id, options: opts)
+        }
+    }
+    
+    /**
+     This method returns a one-time OTP to be displayed on the current device. The user must be authenticated on this device. The OTP is meant for cross-authentication, where the user reads the OTP from the screen and enters it on the target device.
+     
+     - Parameter options: Options for the request, including an optional authorization token.
+     - Returns: An `OTPResult` containing the generated code and its expiration details.
+     - Throws: A `LoginIDError` if the request fails.
+     */
+    public func requestOtp(
+        options: RequestOtpOptions? = nil
+    ) async throws -> OTPResult {
+        return try await TaskHandler.executeTask {
+            try await self.otpController.requestOtp(options: options)
+        }
+    }
+    
+    /**
+     This method verifies the OTP and returns an authorization token, which can be used with the `passkeyCreate()`
+     method to create a new passkey. The authorization token has a short validity period and should be used immediately.
+     
+     - Parameters:
+       - username: The username of the account being authenticated.
+       - otp: The one-time password entered by the user.
+       - options: Optional parameters to customize the request, such as `usernameType`.
+     - Returns: An `AuthResult` with tokens if the OTP is valid.
+     - Throws: A `LoginIDError` if validation fails.
+     */
+    public func validateOtp(
+        username: String,
+        otp: String,
+        options: ValidateOtpOptions? = nil
+    ) async throws -> AuthResult {
+        return try await TaskHandler.executeTask {
+            try await self.otpController.validateOtp(username: username, otp: otp, options: options)
+        }
+    }
+    
+    /**
+     This method requests an OTP from the backend to be sent via the selected method. The method of delivery should be based on
+     the user's choice from the list of available options. This can be found in the result of `authenticateWithPasskey`
+     method as `fallbackOptions`.
+     
+     - Parameters:
+       - username: The username to send the OTP to.
+       - method: The delivery channel, either `.email` or `.sms`. Defaults to `.email`.
+       - options: Optional parameters to customize the request, such as `usernameType`.
+     - Throws: A `LoginIDError` if the OTP cannot be sent.
+     */
+    public func requestAndSendOtp(
+        username: String,
+        method: MessageMethod = .email,
+        options: RequestAndSendOtpOptions? = nil
+    ) async throws {
+        return try await TaskHandler.executeTask {
+            try await self.otpController.requestAndSendOtp(username: username, method: method, options: options)
         }
     }
 }
