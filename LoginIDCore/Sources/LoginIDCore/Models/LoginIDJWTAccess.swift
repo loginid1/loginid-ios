@@ -12,7 +12,7 @@ import Foundation
 /// This type provides access to the standard JWT claims used by LoginID.
 /// The original JWT string is available through the ``jwt`` property after
 /// decoding with ``decodeToLoginIdToken(_:)``.
-struct LoginIDJWTAccess: Codable {
+public struct LoginIDJWTAccess: Codable {
 
     /// The authenticated user's username.
     public let username: String
@@ -28,6 +28,9 @@ struct LoginIDJWTAccess: Codable {
 
     /// The token expiration time, expressed as seconds since the Unix epoch.
     public let exp: Int64
+     
+    /// Relying party ID used typically used for passkey authentication to confirm the user has signed in under the specific domain.
+    public let rpId: String
 
     /// The original encoded JWT.
     ///
@@ -44,7 +47,7 @@ struct LoginIDJWTAccess: Codable {
     /// - Parameter jwt: The encoded JWT string.
     /// - Returns: A decoded ``LoginIDJWTAccess`` instance, or `nil` if the JWT
     ///   is malformed or its payload cannot be decoded.
-    static func decodeToLoginIdToken(_ jwt: String) -> Self? {
+    public static func decodeToLoginIdToken(_ jwt: String) -> Self? {
         let segments = jwt.split(separator: ".")
 
         guard segments.count == 3,

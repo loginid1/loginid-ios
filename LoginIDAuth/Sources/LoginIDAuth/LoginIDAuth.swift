@@ -20,6 +20,7 @@ final public class LoginIDAuthKit: Sendable {
     private let passkeysController: Passkeys
     private let passkeyManager: PasskeyManager
     private let otpController: OTP
+    private let utilsController: Utils
     
     private let passkeysService: LoginIDPasskeyAPI
     private let passkeyManagementService: LoginIDPasskeyManagementAPI
@@ -62,6 +63,12 @@ final public class LoginIDAuthKit: Sendable {
         otpController = OTP(
             sessionStore: sessionStore,
             otpApi: otpService
+        )
+        
+        utilsController = Utils(
+            config: config,
+            passkeyApi: passkeysService,
+            sessionManager: sessionStore
         )
     }
 
@@ -264,5 +271,25 @@ final public class LoginIDAuthKit: Sendable {
         return try await TaskHandler.executeTask {
             try await self.otpController.requestAndSendOtp(username: username, method: method, options: options)
         }
+    }
+    
+    /// Validates the application's configuration settings and provides a suggested correction if any issues are detected.
+    ///
+    /// - Returns: A `LoginIDConfigResult` if there is a configuration issue, otherwise `nil`.
+    public func verifyConfigSettings() async -> LoginIDConfigResult? {
+        return await utilsController.verifyConfigSettings()
+    }
+
+    /// Check whether the user of the current browser session is authenticated and returns user info.
+    /// This info is retrieved locally and no requests to backend are made.
+    ///
+    /// - Returns: A `SessionInfo` object if a valid session exists, otherwise `nil`.
+    public func getSessionInfo() -> SessionInfo? {
+        return utilsController.getSessionInfo()
+    }
+
+    /// Clears current user session. This method ideletes the authorization token locally.
+    public func logout() {
+        utilsController.logout()
     }
 }

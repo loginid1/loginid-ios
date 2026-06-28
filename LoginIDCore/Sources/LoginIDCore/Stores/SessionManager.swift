@@ -42,6 +42,16 @@ public protocol SessionManaging: Sendable {
      - Parameter accessToken: The access token to store. If `nil`, the method ignores the request.
      */
     func setAccessToken(_ accessToken: String?)
+
+    /**
+     Retrieves and validates the stored access token.
+
+     The access token is decoded and its expiration time is checked.
+     If the token has expired or cannot be decoded, `nil` is returned.
+
+     - Returns: A parsed `LoginIDJWTAccess` if the token is valid; otherwise `nil`.
+     */
+    func getParsedAccessToken() -> LoginIDJWTAccess?
 }
 
 /// Default Keychain-backed implementation of `SessionManaging`.
@@ -166,7 +176,7 @@ final public class SessionManager: SessionManaging {
 
      - Returns: A parsed `LoginIDJWTAccess` if the token is valid; otherwise `nil`.
      */
-    private func getParsedAccessToken() -> LoginIDJWTAccess? {
+    public func getParsedAccessToken() -> LoginIDJWTAccess? {
         guard
             let jwt = getTokenSet()?.accessToken,
             let decodedJWT = LoginIDJWTAccess.decodeToLoginIdToken(jwt)
