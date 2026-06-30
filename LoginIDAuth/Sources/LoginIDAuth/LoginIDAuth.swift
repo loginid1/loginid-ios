@@ -77,6 +77,19 @@ final public class LoginIDAuth: Sendable {
         )
     }
 
+    /**
+     This method helps to create a passkey. The only required parameter is the username, but additional attributes can be provided in the options parameter.
+     Note: While the authorization token is optional, it must always be used in a production environment. You can skip it during development by adjusting
+     the app configuration in the LoginID dashboard.
+     
+     A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+     
+     - Parameters:
+       - username: The username for which to create the passkey.
+       - options: Optional parameters for passkey creation.
+     - Returns: An `AuthResult` containing an authorization token.
+     - Throws: A `LoginIDError` if passkey creation fails.
+     */
     public func createPasskey(
         username: String,
         options: CreatePasskeyOptions? = nil
@@ -86,6 +99,20 @@ final public class LoginIDAuth: Sendable {
         }
     }
     
+    /**
+     This method helps to create a passkey. The only required parameter is the username, but additional attributes can be provided in the options parameter.
+     Note: While the authorization token is optional, it must always be used in a production environment. You can skip it during development by adjusting
+     the app configuration in the LoginID dashboard.
+     
+     A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+
+     - Parameters:
+       - username: The username for which to create the passkey.
+       - authzToken: An authorization token from a previous authentication step.
+       - options: Optional parameters for passkey creation.
+     - Returns: An `AuthResult` containing an authorization token.
+     - Throws: A `LoginIDError` if passkey creation fails.
+     */
     public func createPasskey(
         username: String,
         authzToken: String,
@@ -97,6 +124,17 @@ final public class LoginIDAuth: Sendable {
         }
     }
     
+    /**
+     This method authenticates a user with a passkey and may trigger additional browser dialogs to guide the user through the process.
+     
+     A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+     
+     - Parameters:
+       - username: The username of the user to authenticate.
+       - options: Optional parameters for passkey authentication.
+     - Returns: An `AuthResult` containing an authorization token if authentication is successful.
+     - Throws: A `LoginIDError` if authentication fails.
+     */
     public func authenticateWithPasskey(
         username: String,
         options: AuthenticateWithPasskeyOptions? = nil
@@ -106,6 +144,15 @@ final public class LoginIDAuth: Sendable {
         }
     }
     
+    /**
+     Authenticates a user by utilizing the browser's passkey autofill capabilities.
+     
+     A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+     
+     - Parameter options: Optional parameters for passkey authentication.
+     - Returns: An `AuthResult` containing an authorization token if authentication is successful.
+     - Throws: A `LoginIDError` if authentication fails or is canceled.
+     */
     public func authenticateWithPasskeyAutofill(
         options: AuthenticateWithPasskeyOptions? = nil
     ) async throws -> AuthResult {
