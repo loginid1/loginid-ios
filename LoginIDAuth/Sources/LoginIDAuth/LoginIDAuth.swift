@@ -7,10 +7,13 @@
 
 import LoginIDCore
 
+@_exported import LoginIDCore
+
 /// The main entry point for the LoginIDAuth package.
 /// Provides access to all SDK functionality, including configuration,
 /// and LoginID standalone authentication services.
-final public class LoginIDAuthKit: Sendable {
+final public class LoginIDAuth: Sendable {
+    private let clientEvents: LoginIDClientEventsAPI
     private let credentials: KeyCredentialManaging
     private let sessionStore: SessionManaging
     private let deviceStore: DeviceStoring
@@ -43,6 +46,7 @@ final public class LoginIDAuthKit: Sendable {
         passkeysService = PasskeyService()
         passkeyManagementService = PasskeyManagementService()
         otpService = OTPService()
+        clientEvents = ClientEventsService(config: config)
 
         credentials = MainActor.assumeIsolated { KeyCredentialManager() }
         
@@ -52,7 +56,8 @@ final public class LoginIDAuthKit: Sendable {
             sessionStore: sessionStore,
             credentials: credentials,
             trustStore: trustId,
-            passkeyApi: passkeysService
+            passkeyApi: passkeysService,
+            clientEvents: clientEvents
         )
         
         passkeyManager = PasskeyManager(
@@ -74,7 +79,7 @@ final public class LoginIDAuthKit: Sendable {
 
     public func createPasskey(
         username: String,
-        options: CreatePasskeyOptions?
+        options: CreatePasskeyOptions? = nil
     ) async throws -> AuthResult {
         return try await TaskHandler.executeTask {
             try await self.passkeysController.createPasskey(username: username, options: options)
@@ -84,7 +89,7 @@ final public class LoginIDAuthKit: Sendable {
     public func createPasskey(
         username: String,
         authzToken: String,
-        options: CreatePasskeyOptions?
+        options: CreatePasskeyOptions? = nil
     ) async throws -> AuthResult {
         let opts = CreatePasskeyOptions(authzToken: authzToken, options: options)
         return try await TaskHandler.executeTask {
@@ -94,7 +99,7 @@ final public class LoginIDAuthKit: Sendable {
     
     public func authenticateWithPasskey(
         username: String,
-        options: AuthenticateWithPasskeyOptions?
+        options: AuthenticateWithPasskeyOptions? = nil
     ) async throws -> AuthResult {
         return try await TaskHandler.executeTask {
             try await self.passkeysController.authenticateWithPasskey(username: username, options: options)
@@ -102,7 +107,7 @@ final public class LoginIDAuthKit: Sendable {
     }
     
     public func authenticateWithPasskeyAutofill(
-        options: AuthenticateWithPasskeyOptions?
+        options: AuthenticateWithPasskeyOptions? = nil
     ) async throws -> AuthResult {
         let opts = AuthenticateWithPasskeyOptions(options: options)
         return try await TaskHandler.executeTask {

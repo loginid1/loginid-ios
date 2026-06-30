@@ -60,7 +60,7 @@ public enum Defaults {
             deviceId: deviceId ?? store.getDeviceId()
         )
     }
-
+    
     public static func trustItems(
         config: LoginIDConfig,
         store: TrustIDManaging,
@@ -68,26 +68,20 @@ public enum Defaults {
         merchantTrustId: String? = nil,
         username: String
     ) throws -> [String: String] {
-        let walletId: String
-        if txPayload != nil {
-            walletId = try store.signWithTrustId()
-        } else {
-            walletId = ""
-        }
-
-        let merchantId = merchantTrustId ?? ""
-
-        let authId: String
-        if config.useTrustId, walletId.isEmpty, merchantId.isEmpty, !username.isEmpty {
-            authId = try store.signWithTrustId(username: username)
-        } else {
-            authId = ""
-        }
+        let walletId: String? = txPayload != nil ? try store.signWithTrustId() : nil
+        let merchantId: String? = merchantTrustId?.isEmpty == false ? merchantTrustId : nil
+        let authId: String? =
+            if config.useTrustId, walletId == nil, merchantId == nil, !username.isEmpty {
+                try store.signWithTrustId(username: username)
+            } else {
+                nil
+            }
 
         return [
             "auth": authId,
             "wallet": walletId,
-            "merchant": merchantId,
+            "merchant": merchantId
         ]
+        .compactMapValues { $0 }
     }
 }

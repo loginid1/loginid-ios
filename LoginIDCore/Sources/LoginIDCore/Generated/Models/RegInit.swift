@@ -14,6 +14,7 @@ public struct RegInit: Sendable, Codable, ParameterConvertible, Hashable {
         case proceed = "proceed"
         case signin = "signIn"
         case fail = "fail"
+        case empty = ""
     }
     /** An action to be performed by the front-end to complete the registration flow. */
     public var action: Action = .proceed

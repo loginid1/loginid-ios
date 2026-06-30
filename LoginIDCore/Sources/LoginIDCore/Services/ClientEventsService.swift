@@ -7,16 +7,11 @@
 
 import AuthenticationServices
 import Foundation
-import LoginIDCore
 
 /// A service responsible for handling client-side events and analytics.
-struct ClientEventsService: ClientEventsServiceProtocol {
+public struct ClientEventsService: LoginIDClientEventsAPI {
     /// Configuration for LoginID services.
     private let config: LoginIDConfig
-    /// The API client for submitting client events, conforming to `ClientEventsAPIProtocol`.
-    private let clientEventsAPI: ClientEventsAPIProtocol.Type
-    /// The configuration for API requests.
-    private let apiConfiguration: OpenAPIClientAPIConfiguration
 
     /**
      Initializes the `ClientEventsService`.
@@ -26,14 +21,8 @@ struct ClientEventsService: ClientEventsServiceProtocol {
        - clientEventsAPI: The API client to use for submitting events. Defaults to `ClientEventsAPI`.
        - apiConfiguration: The configuration for the API request. If not provided, the shared global one will be used..
      */
-    init(
-        config: LoginIDConfig,
-        clientEventsAPI: ClientEventsAPIProtocol.Type = ClientEventsAPI.self,
-        apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared
-    ) {
+    public init(config: LoginIDConfig) {
         self.config = config
-        self.clientEventsAPI = clientEventsAPI
-        self.apiConfiguration = apiConfiguration
     }
     
     /**
@@ -61,10 +50,9 @@ struct ClientEventsService: ClientEventsServiceProtocol {
     private func submitEvent(message: String, session: String?) async throws -> String? {
         let requestBody = SubmitRequestBody(event: message, isError: true)
         
-        let response = try await clientEventsAPI.clientEventsSubmit(
+        let response = try await ClientEventsAPI.clientEventsSubmit(
             submitRequestBody: requestBody,
             authorization: session,
-            apiConfiguration: apiConfiguration
         )
         
         return response.session

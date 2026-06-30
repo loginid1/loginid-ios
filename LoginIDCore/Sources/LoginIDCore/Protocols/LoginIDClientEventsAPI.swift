@@ -1,15 +1,14 @@
 //
-//  ClientEventsServiceProtocol.swift
+//  LoginIDClientEventsAPI.swift
 //  LoginIDMFA
 //
 //  Created by LoginID on 2026-06-24.
 //
 
 import Foundation
-import LoginIDCore
 
 /// A protocol that defines the interface for submitting client-side events.
-protocol ClientEventsServiceProtocol: Sendable {
+public protocol LoginIDClientEventsAPI: Sendable {
     /**
      Submits an `ASAuthorizationError` as a client-side event.
      

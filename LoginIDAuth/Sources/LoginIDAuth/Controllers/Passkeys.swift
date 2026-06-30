@@ -9,6 +9,7 @@ import LoginIDCore
 
 /// Provides the core interface for performing passkey authentication flows with LoginID FIDO2 service.
 final class Passkeys : Sendable {
+    private let clientEvents: LoginIDClientEventsAPI
     private let credentials: KeyCredentialManaging
     private let passkeyApi: LoginIDPasskeyAPI
     private let deviceStore: DeviceStoring
@@ -22,7 +23,8 @@ final class Passkeys : Sendable {
         sessionStore: SessionManaging,
         credentials: KeyCredentialManaging,
         trustStore: TrustIDManaging,
-        passkeyApi: LoginIDPasskeyAPI
+        passkeyApi: LoginIDPasskeyAPI,
+        clientEvents: LoginIDClientEventsAPI
     ) {
         self.config = config
         self.deviceStore = deviceStore
@@ -30,6 +32,7 @@ final class Passkeys : Sendable {
         self.passkeyApi = passkeyApi
         self.trustId = trustStore
         self.credentials = credentials
+        self.clientEvents = clientEvents
     }
     
     public func createPasskey(
@@ -115,7 +118,7 @@ final class Passkeys : Sendable {
 
         switch initRes.action {
         case .proceed:
-            guard let publicKey = initRes.assertionOptions, publicKey.isValid else {
+            guard let publicKey = initRes.assertionOptions else {
                 throw LoginIDError(
                     msgCode: "passkey_authentication_failed",
                     msg: "Assertion options not found or invalid"
@@ -205,14 +208,17 @@ final class Passkeys : Sendable {
     }
     
     private func invokePasskeyApi<T>(
-        session _: String,
+        session: String,
         _ fn: () async throws -> T
     ) async throws -> T {
         do {
             let result = try await fn()
             return result
         } catch {
-            // TODO: add client events here at some point
+            _ = try? await clientEvents.submitASAuthorizationErrorEvent(
+                error: error,
+                session: session
+            )
             throw error
         }
     }

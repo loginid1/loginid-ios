@@ -117,7 +117,12 @@ if (data.components && data.components.schemas) {
         schema.properties.flow.enum.push('checkout')
         schema.properties.flow.enum.push('signUp')
         schema.properties.flow.enum.push('signIn')
+        break;
       }
+
+      case 'RegInit':
+        schema.properties.action.enum = [...schema.properties.action.enum, ''];
+        break;
 
       case 'AuthInit':
         schema.required = schema.required.filter((req) => req !== 'assertionOptions');
