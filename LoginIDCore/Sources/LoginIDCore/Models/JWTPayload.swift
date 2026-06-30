@@ -15,8 +15,8 @@ struct JWTPayload: Codable {
     let exp: Int
     
     public init() {
-        // 1 min exp
-        let nowInMilliseconds = Int(Date().timeIntervalSince1970 * 1000) + 60
-        self.exp = nowInMilliseconds
+        // 5 min exp
+        let nowInSeconds = Int(Date().timeIntervalSince1970) + 300
+        self.exp = nowInSeconds
     }
 }

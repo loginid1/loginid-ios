@@ -106,13 +106,12 @@ public struct MFASessionResult: Sendable {
         self.payloadSignature = tokenSet?.payloadSignature
         self.isComplete = (tokenSet?.accessToken != nil) || (tokenSet?.payloadSignature != nil)
         
+        self.merchantTrustId = trustSet?.merchantTrustId
+        self.walletTrustId = trustSet?.walletTrustId
+
         if self.isComplete {
-            self.merchantTrustId = trustSet?.merchantTrustId
-            self.walletTrustId = trustSet?.walletTrustId
             self.passkeyInfo = mfaData?.passkeyInfo
         } else {
-            self.merchantTrustId = nil
-            self.walletTrustId = nil
             self.passkeyInfo = nil
         }
         

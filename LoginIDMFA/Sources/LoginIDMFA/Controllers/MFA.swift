@@ -101,7 +101,7 @@ final class MFA : Sendable {
         session.logout()
         store.storeMFAInfo(info)
         
-        return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
+        return MFASessionResult(info: info, mfaData: nil, trustSet: trustIds)
     }
     
     /**
@@ -245,12 +245,12 @@ final class MFA : Sendable {
         username: String?,
         _ fn: () async throws -> Mfa
     ) async throws -> MFASessionResult {
+        let trustSet = store.getTrustSet()
         do {
             let performActionResult = try await fn()
             let info = store.getMFAInfo()
             let successInfo = MFAInfo(username: username, flow: info?.flow)
             let mfaData = MFAData(result: performActionResult)
-            let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
             deviceStore.storeDeviceId(performActionResult.deviceId)
@@ -267,7 +267,7 @@ final class MFA : Sendable {
                 
                 store.storeMFAInfo(info)
                 
-                return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
+                return MFASessionResult(info: info, mfaData: nil, trustSet: trustSet)
             }
             
             // Rethrow same error. Global TaskHandler should catch it.
