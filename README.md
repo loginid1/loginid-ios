@@ -6,12 +6,19 @@ authentication, passkey support, and multi-factor authentication (MFA) into iOS 
 ## Structure
 
 ```
+LoginIDAuth                 # Native iOS SDK for standalone passkey authentication
 LoginIDCore                 # Shared utilities and core logic for all SDKs
 LoginIDMFA                  # Native iOS SDK for passwordless + MFA
 LoginIDWalletAuth           # Native iOS SDK for specialized wallet-based passkey authentication
 ```
 
 ## Packages Overview 
+
+### LoginIDAuth
+
+**LoginIDAuth** is the main entry point for the LoginID SDK, offering a comprehensive suite of authentication services. It provides all the necessary tools for passkey-based authentication, one-time passwords (OTP), transaction confirmation, and passkey management, serving as a standalone solution for developers.
+
+---
 
 ### LoginIDCore
 

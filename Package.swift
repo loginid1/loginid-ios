@@ -13,6 +13,10 @@ let package = Package(
             targets: ["LoginIDCore"]
         ),
         .library(
+            name: "LoginIDAuth",
+            targets: ["LoginIDAuth"]
+        ),
+        .library(
             name: "LoginIDMFA",
             targets: ["LoginIDMFA"]
         ),
@@ -31,6 +35,18 @@ let package = Package(
             name: "LoginIDCoreTests",
             dependencies: ["LoginIDCore"],
             path: "LoginIDCore/Tests"
+        ),
+
+        // MARK: - Auth
+        .target(
+            name: "LoginIDAuth",
+            dependencies: ["LoginIDCore"],
+            path: "LoginIDAuth/Sources"
+        ),
+        .testTarget(
+            name: "LoginIDAuthTests",
+            dependencies: ["LoginIDAuth"],
+            path: "LoginIDAuth/Tests"
         ),
 
         // MARK: - MFA
