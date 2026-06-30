@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Represents an individual MFA (Multi-Factor Authentication) factor that the user must complete.
 public struct RemainingAction: Sendable {

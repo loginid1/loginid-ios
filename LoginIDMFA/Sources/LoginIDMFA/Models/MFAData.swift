@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2026-06-23.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// An extended set of tokens obtained upon login, with optional authentication details.
 public struct MFAData {

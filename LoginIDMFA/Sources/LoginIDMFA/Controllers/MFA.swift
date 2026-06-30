@@ -5,7 +5,6 @@
 //  Created by Michael Braga on 2025-08-11.
 //
 
-import LoginIDAPIClient
 import LoginIDCore
 
 /// Provides the core interface for performing Multi-Factor Authentication (MFA) flows.
@@ -13,8 +12,9 @@ import LoginIDCore
 /// Handles MFA configuration, secure session storage, device trust management, and persistence
 /// of MFA-related data.
 final class MFA : Sendable {
-    private let clientEvents: ClientEventsServiceProtocol
+    private let clientEvents: LoginIDClientEventsAPI
     private let credentials: KeyCredentialManaging
+    private let deviceStore: DeviceStoring
     private let trustId: TrustIDManaging
     private let session: SessionManaging
     private let config: LoginIDConfig
@@ -34,13 +34,15 @@ final class MFA : Sendable {
     public init(
         config: LoginIDConfig,
         store: MFAStoring,
+        deviceStore: DeviceStoring,
         session: SessionManaging,
         trustId: TrustIDManaging,
         credentials: KeyCredentialManaging,
-        clientEvents: ClientEventsServiceProtocol
+        clientEvents: LoginIDClientEventsAPI
     ) {
         self.config = config
         self.store = store
+        self.deviceStore = deviceStore
         self.session = session
         self.trustId = trustId
         self.credentials = credentials
@@ -71,7 +73,7 @@ final class MFA : Sendable {
             options: options,
             trustId: trustId,
             config: config,
-            store: store
+            store: deviceStore
         )
         
         let deviceInfo = await DeviceUtils.getDeviceInfo(deviceId: values.deviceId)
@@ -99,7 +101,7 @@ final class MFA : Sendable {
         session.logout()
         store.storeMFAInfo(info)
         
-        return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
+        return MFASessionResult(info: info, mfaData: nil, trustSet: trustIds)
     }
     
     /**
@@ -243,19 +245,19 @@ final class MFA : Sendable {
         username: String?,
         _ fn: () async throws -> Mfa
     ) async throws -> MFASessionResult {
+        let trustSet = store.getTrustSet()
         do {
             let performActionResult = try await fn()
             let info = store.getMFAInfo()
             let successInfo = MFAInfo(username: username, flow: info?.flow)
             let mfaData = MFAData(result: performActionResult)
-            let trustSet = store.getTrustSet()
             
             store.storeMFAInfo(successInfo)
-            store.storeDeviceId(performActionResult.deviceId)
+            deviceStore.storeDeviceId(performActionResult.deviceId)
             session.setTokenSet(mfaData.tokenSet)
             
             return MFASessionResult(info: successInfo, mfaData: mfaData, trustSet: trustSet)
-        } catch let LoginIDAPIClient.ErrorResponse.error(status, data, _, underlying)  {
+        } catch let ErrorResponse.error(status, data, _, underlying)  {
             if status == 401,
                let data = data,
                let result = try? JSONCoding.decoder().decode(MfaNext.self, from: data),
@@ -265,11 +267,11 @@ final class MFA : Sendable {
                 
                 store.storeMFAInfo(info)
                 
-                return MFASessionResult(info: info, mfaData: nil, trustSet: nil)
+                return MFASessionResult(info: info, mfaData: nil, trustSet: trustSet)
             }
             
             // Rethrow same error. Global TaskHandler should catch it.
-            throw LoginIDAPIClient.ErrorResponse.error(status, data, nil, underlying)
+            throw ErrorResponse.error(status, data, nil, underlying)
         } catch {
             let currentSession = store.getMFAInfo()?.session
             let updatedSession = try? await clientEvents.submitASAuthorizationErrorEvent(

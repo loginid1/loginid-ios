@@ -5,7 +5,6 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
-import LoginIDAPIClient
 import LoginIDCore
 
 /// Utility for validating and resolving the required payload

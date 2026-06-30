@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
-import LoginIDAPIClient
+import LoginIDCore
 
 /// Represents the result of a Multi-Factor Authentication (MFA) session.
 ///
@@ -106,13 +106,12 @@ public struct MFASessionResult: Sendable {
         self.payloadSignature = tokenSet?.payloadSignature
         self.isComplete = (tokenSet?.accessToken != nil) || (tokenSet?.payloadSignature != nil)
         
+        self.merchantTrustId = trustSet?.merchantTrustId
+        self.walletTrustId = trustSet?.walletTrustId
+
         if self.isComplete {
-            self.merchantTrustId = trustSet?.merchantTrustId
-            self.walletTrustId = trustSet?.walletTrustId
             self.passkeyInfo = mfaData?.passkeyInfo
         } else {
-            self.merchantTrustId = nil
-            self.walletTrustId = nil
             self.passkeyInfo = nil
         }
         
