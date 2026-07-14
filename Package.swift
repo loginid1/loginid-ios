@@ -20,10 +20,6 @@ let package = Package(
             name: "LoginIDMFA",
             targets: ["LoginIDMFA"]
         ),
-        .library(
-            name: "LoginIDWalletAuth",
-            targets: ["LoginIDWalletAuth"]
-        ),
     ],
     targets: [
         // MARK: - Core
@@ -66,18 +62,6 @@ let package = Package(
             name: "LoginIDMFATests",
             dependencies: ["LoginIDMFA"],
             path: "LoginIDMFA/Tests"
-        ),
-
-        // MARK: - WalletAuth
-        .target(
-            name: "LoginIDWalletAuth",
-            dependencies: ["LoginIDMFA"],
-            path: "LoginIDWalletAuth/Sources"
-        ),
-        .testTarget(
-            name: "LoginIDWalletAuthTests",
-            dependencies: ["LoginIDWalletAuth"],
-            path: "LoginIDWalletAuth/Tests"
         ),
     ]
 )

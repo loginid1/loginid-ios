@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2062365C2E4E59B00001E4F6 /* LoginIDWalletAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2062365B2E4E59B00001E4F6 /* LoginIDWalletAuth */; };
-		2062365F2E4E5BF90001E4F6 /* LoginIDWalletAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2062365E2E4E5BF90001E4F6 /* LoginIDWalletAuth */; };
 		20DE75462E4C50EF009404C5 /* LoginIDMFA in Frameworks */ = {isa = PBXBuildFile; productRef = 20DE75452E4C50EF009404C5 /* LoginIDMFA */; };
+		4D4F10C2300701EF0011B70E /* LoginIDMFA in Frameworks */ = {isa = PBXBuildFile; productRef = 4D4F10C1300701EF0011B70E /* LoginIDMFA */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2062365F2E4E5BF90001E4F6 /* LoginIDWalletAuth in Frameworks */,
-				2062365C2E4E59B00001E4F6 /* LoginIDWalletAuth in Frameworks */,
+				4D4F10C2300701EF0011B70E /* LoginIDMFA in Frameworks */,
 				20DE75462E4C50EF009404C5 /* LoginIDMFA in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,8 +120,7 @@
 			name = ExampleMFA;
 			packageProductDependencies = (
 				20DE75452E4C50EF009404C5 /* LoginIDMFA */,
-				2062365B2E4E59B00001E4F6 /* LoginIDWalletAuth */,
-				2062365E2E4E5BF90001E4F6 /* LoginIDWalletAuth */,
+				4D4F10C1300701EF0011B70E /* LoginIDMFA */,
 			);
 			productName = ExampleMFA;
 			productReference = 20DE751A2E4C4FFB009404C5 /* ExampleMFA.app */;
@@ -208,7 +205,7 @@
 			mainGroup = 20DE75112E4C4FFB009404C5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				2062365D2E4E5BF80001E4F6 /* XCLocalSwiftPackageReference "../LoginIDWalletAuth" */,
+				4D4F10C0300701EF0011B70E /* XCLocalSwiftPackageReference "../LoginIDMFA" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 20DE751B2E4C4FFB009404C5 /* Products */;
@@ -581,22 +578,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		2062365D2E4E5BF80001E4F6 /* XCLocalSwiftPackageReference "../LoginIDWalletAuth" */ = {
+		4D4F10C0300701EF0011B70E /* XCLocalSwiftPackageReference "../LoginIDMFA" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../LoginIDWalletAuth;
+			relativePath = ../LoginIDMFA;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2062365B2E4E59B00001E4F6 /* LoginIDWalletAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LoginIDWalletAuth;
-		};
-		2062365E2E4E5BF90001E4F6 /* LoginIDWalletAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LoginIDWalletAuth;
-		};
 		20DE75452E4C50EF009404C5 /* LoginIDMFA */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LoginIDMFA;
+		};
+		4D4F10C1300701EF0011B70E /* LoginIDMFA */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LoginIDMFA;
 		};
