@@ -54,7 +54,7 @@ public struct CreatePasskeyOptions {
         self.deviceId = deviceId
     }
     
-    init(
+    internal init(
         authzToken: String? = nil,
         options: CreatePasskeyOptions? = nil,
     ) {

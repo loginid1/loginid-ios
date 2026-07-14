@@ -8,7 +8,7 @@
 import LoginIDCore
 
 /// Provides an interface for managing a user's passkeys.
-final class PasskeyManager : Sendable {
+internal final class PasskeyManager : Sendable {
     private let session: SessionManaging
     private let passkeyApi: LoginIDPasskeyManagementAPI
     

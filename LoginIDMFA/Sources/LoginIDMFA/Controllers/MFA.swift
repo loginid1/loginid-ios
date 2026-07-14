@@ -11,7 +11,7 @@ import LoginIDCore
 ///
 /// Handles MFA configuration, secure session storage, device trust management, and persistence
 /// of MFA-related data.
-final class MFA : Sendable {
+internal final class MFA : Sendable {
     private let clientEvents: LoginIDClientEventsAPI
     private let credentials: KeyCredentialManaging
     private let deviceStore: DeviceStoring

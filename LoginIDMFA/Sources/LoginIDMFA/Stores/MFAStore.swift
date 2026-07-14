@@ -64,7 +64,7 @@ public protocol MFAStoring : Sendable {
 
 /// Default Keychain-backed implementation of `MFAStoring`.
 /// Stores the device ID securely, scoped by a given `appId`.
-final class MFAStore: MFAStoring {
+internal final class MFAStore: MFAStoring {
     private let appId: String
 
     /**

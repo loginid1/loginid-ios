@@ -8,7 +8,7 @@
 import LoginIDCore
 
 /// Provides the core interface for performing passkey authentication flows with LoginID FIDO2 service.
-final class Passkeys : Sendable {
+internal final class Passkeys : Sendable {
     private let clientEvents: LoginIDClientEventsAPI
     private let credentials: KeyCredentialManaging
     private let passkeyApi: LoginIDPasskeyAPI

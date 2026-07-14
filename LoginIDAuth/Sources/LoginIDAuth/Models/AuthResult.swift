@@ -52,7 +52,7 @@ public struct AuthResult {
     /// methods are supported on the current device.
     public let deviceId: String?
 
-    init(result: JWT) {
+    internal init(result: JWT) {
         token = result.jwtAccess
         fallbackOptions = nil
         isAuthenticated = true
@@ -62,7 +62,7 @@ public struct AuthResult {
         deviceId = result.deviceId
     }
 
-    init(fallbackOptions: [String]) {
+    internal init(fallbackOptions: [String]) {
         token = nil
         self.fallbackOptions = fallbackOptions
         isAuthenticated = false

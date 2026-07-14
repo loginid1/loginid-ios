@@ -23,7 +23,7 @@ public struct AuthenticateWithPasskeyOptions {
         self.autofill = autoFill
     }
     
-    init(
+    internal init(
         options: AuthenticateWithPasskeyOptions? = nil,
     ) {
         self.autofill = true

@@ -28,7 +28,7 @@ public struct PasskeyAssertionResponse: Sendable, Codable, Hashable {
      Initializes a `PasskeyAssertionResponse` from an auto-generated `AuthenticatorAssertionResponse`.
      - Parameter response: The auto-generated response object.
      */
-    init(from response: AuthenticatorAssertionResponse) {
+    internal init(from response: AuthenticatorAssertionResponse) {
         self.authenticatorData = response.authenticatorData
         self.clientDataJSON = response.clientDataJSON
         self.credentialId = response.credentialId

@@ -17,7 +17,7 @@ public struct OTPResult {
     
     /// Initializes an `OTPResult` from an `AuthCode` API response.
     /// - Parameter result: The `AuthCode` object from the API.
-    init(result: AuthCode) {
+    internal init(result: AuthCode) {
         self.code = result.code
         self.expiresAt = result.expiresAt
     }

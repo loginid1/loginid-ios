@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-09-10.
 //
 
-extension PerformActionOptions {
+internal extension PerformActionOptions {
     /// Returns a copy of this instance with all the same fields,
     /// except `txPayload` is always `nil`.
     ///

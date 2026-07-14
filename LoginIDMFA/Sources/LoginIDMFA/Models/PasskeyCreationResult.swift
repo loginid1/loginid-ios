@@ -34,7 +34,7 @@ public struct PasskeyCreationResult: Sendable, Codable, Hashable {
      Initializes a `PasskeyCreationResult` from an auto-generated `CreationResult`.
      - Parameter result: The auto-generated result object.
      */
-    init(from result: CreationResult) {
+    internal init(from result: CreationResult) {
         self.attestationObject = result.attestationObject
         self.authenticatorData = result.authenticatorData
         self.clientDataJSON = result.clientDataJSON

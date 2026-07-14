@@ -5,7 +5,7 @@
 //  Created by Michael Braga on 2025-08-12.
 //
 
-extension Array where Element: Hashable {
+internal extension Array where Element: Hashable {
     /**
      Returns the first element from the current array that also exists in the
      given `ordered` array, preserving the order of the `ordered` array.

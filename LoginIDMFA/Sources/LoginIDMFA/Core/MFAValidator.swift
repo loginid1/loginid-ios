@@ -9,7 +9,7 @@ import LoginIDCore
 
 /// Utility for validating and resolving the required payload
 /// to perform specific Multi-Factor Authentication (MFA) actions.
-final class MFAValidator {
+internal final class MFAValidator {
     /// Represents the type of passkey operation to perform,
     /// either creating a new credential or requesting an existing one.
     enum PasskeyOptions {

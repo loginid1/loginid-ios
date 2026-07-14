@@ -8,6 +8,8 @@
 import Foundation
 import LoginIDCore
 
+@_exported import LoginIDCore
+
 /// The main entry point for the LoginIDMFAKit package.
 /// Provides access to all SDK functionality, including configuration,
 /// MFA flows, secure session management, and device trust handling.

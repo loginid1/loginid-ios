@@ -15,7 +15,7 @@ public struct MFAData {
     /// Represents additional information about a passkey.
     let passkeyInfo: PasskeyInfo?
     
-    init(result: Mfa) {
+    internal init(result: Mfa) {
         self.tokenSet = TokenSet(result: result)
         self.passkeyInfo = result.passkeyInfo.map { PasskeyInfo(from: $0) }
     }
