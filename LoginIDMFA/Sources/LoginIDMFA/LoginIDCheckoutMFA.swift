@@ -11,7 +11,7 @@
 
  This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
  */
-final public class LoginID: Sendable {
+final public class LoginIDCheckoutMFA: Sendable {
     private let mfa: LoginIDMFA.LoginIDMFAKit
     
     /**
@@ -48,11 +48,9 @@ final public class LoginID: Sendable {
      such as merchant `checkoutId`.
 
      - Parameters:
-       - options: Options for beginning the flow. Provide:
-         - `username`: Optional username (empty string will be used if `nil`).
-         - `txPayload`: **Required.** The transaction payload to be confirmed/authorized.
-         - `checkoutId`: Optional merchant side identifier.
-         - `traceId`: Optional trace identifier for observability.
+       - txPayload: The transaction payload to be confirmed/authorized.
+       - username: The username of the user initiating MFA. Defaults to an empty string.
+       - options: Optional parameters for beginning the flow. If `options.txPayload` is provided, it takes precedence over the `txPayload` parameter.
 
      - Returns: An `MFASessionResult` describing the newly-started MFA session.
 
@@ -61,21 +59,22 @@ final public class LoginID: Sendable {
        ```
      */
     public func beginFlow(
-        options: BeginFlowOptions
+        txPayload: String,
+        username: String = "",
+        options: BeginFlowOptions? = nil
     ) async throws -> MFASessionResult {
-        if options.txPayload.isEmpty {
-           throw LoginIDError(
-            msgCode: "not_found",
-            msg: "TX payload is required"
-           )
+        let finalTxPayload = options?.txPayload ?? txPayload
+        
+        if finalTxPayload.isEmpty {
+            throw LoginIDError(
+                msgCode: "not_found",
+                msg: "TX payload is required"
+            )
         }
         
-        let username = options.username ?? ""
         let opts = LoginIDMFA.BeginFlowOptions(
-            txPayload: options.txPayload,
-            merchantTrustId: options.merchantTrustId,
-            traceId: options.traceId,
-            deviceId: options.deviceId,
+            txPayload: finalTxPayload,
+            options: options
         )
         
         return try await mfa.beginFlow(

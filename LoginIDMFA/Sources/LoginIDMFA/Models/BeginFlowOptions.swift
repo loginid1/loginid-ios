@@ -56,7 +56,7 @@ public struct BeginFlowOptions {
     
     public init(
         displayName: String? = nil,
-        usernameType: UsernameType = UsernameType.other,
+        usernameType: UsernameType = .other,
         txPayload: String? = nil,
         merchantTrustId: String? = nil,
         traceId: String? = nil,
@@ -68,5 +68,17 @@ public struct BeginFlowOptions {
         self.merchantTrustId = merchantTrustId
         self.traceId = traceId
         self.deviceId = deviceId
+    }
+    
+    internal init(
+        txPayload: String,
+        options: BeginFlowOptions?
+    ) {
+        self.displayName = options?.displayName
+        self.usernameType = options?.usernameType ?? .other
+        self.txPayload = txPayload
+        self.merchantTrustId = options?.merchantTrustId
+        self.traceId = options?.traceId
+        self.deviceId = options?.deviceId
     }
 }
