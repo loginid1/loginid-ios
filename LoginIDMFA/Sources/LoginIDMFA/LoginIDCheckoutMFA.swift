@@ -1,22 +1,16 @@
 //
-//  LoginID.swift
+//  LoginIDCheckoutMFA.swift
 //  LoginIDMFA
 //
-//  Created by Michael Braga on 2025-07-31.
+//  Created by Michael Braga on 2026-07-14.
 //
 
-@_exported import LoginIDCore
-@_exported import LoginIDMFA
-
-/**
- A specialized authentication helper built on top of LoginID's MFA flow, designed for checkout scenarios
- where you need both authentication and identity trust.
-
- This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
- */
-final public class LoginID: Sendable {
+/// A specialized authentication helper built on top of LoginID's MFA flow, designed for checkout scenarios
+/// where you need both authentication and identity trust.
+///
+/// This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
+final public class LoginIDCheckoutMFA: Sendable {
     private let mfa: LoginIDMFA.LoginIDMFAKit
-    private let store: WalletAuthStoring
     
     /**
      Creates a new wallet authentication helper using a base URL.
@@ -30,8 +24,6 @@ final public class LoginID: Sendable {
         self.mfa = LoginIDMFA.LoginIDMFAKit(baseUrl: baseUrl)
         
         let appId = LoginIDConfig(baseUrl: baseUrl).getAppIdOrEmpty()
-        
-        self.store = WalletAuthStore(appId: appId)
     }
     
     /**
@@ -45,8 +37,6 @@ final public class LoginID: Sendable {
         self.mfa = LoginIDMFA.LoginIDMFAKit(config: config)
         
         let appId = config.getAppIdOrEmpty()
-        
-        self.store = WalletAuthStore(appId: appId)
     }
     
     /**
@@ -56,11 +46,9 @@ final public class LoginID: Sendable {
      such as merchant `checkoutId`.
 
      - Parameters:
-       - options: Options for beginning the flow. Provide:
-         - `username`: Optional username (empty string will be used if `nil`).
-         - `txPayload`: **Required.** The transaction payload to be confirmed/authorized.
-         - `checkoutId`: Optional merchant side identifier.
-         - `traceId`: Optional trace identifier for observability.
+       - txPayload: The transaction payload to be confirmed/authorized.
+       - username: The username of the user initiating MFA. Defaults to an empty string.
+       - options: Optional parameters for beginning the flow. If `options.txPayload` is provided, it takes precedence over the `txPayload` parameter.
 
      - Returns: An `MFASessionResult` describing the newly-started MFA session.
 
@@ -69,25 +57,23 @@ final public class LoginID: Sendable {
        ```
      */
     public func beginFlow(
-        options: BeginFlowOptions
+        txPayload: String,
+        username: String = "",
+        options: BeginFlowOptions? = nil
     ) async throws -> MFASessionResult {
-        if options.txPayload.isEmpty {
-           throw LoginIDError(
-            msgCode: "not_found",
-            msg: "TX payload is required"
-           )
+        let finalTxPayload = options?.txPayload ?? txPayload
+        
+        if finalTxPayload.isEmpty {
+            throw LoginIDError(
+                msgCode: "not_found",
+                msg: "TX payload is required"
+            )
         }
         
-        let username = options.username ?? ""
         let opts = LoginIDMFA.BeginFlowOptions(
-            txPayload: options.txPayload,
-            merchantTrustId: options.merchantTrustId,
-            traceId: options.traceId,
-            deviceId: options.deviceId,
+            txPayload: finalTxPayload,
+            options: options
         )
-        
-        store.storeCheckoutId(options.merchantTrustId)
-        store.storeTraceId(options.traceId)
         
         return try await mfa.beginFlow(
             username: username,
@@ -118,7 +104,7 @@ final public class LoginID: Sendable {
        ```
      */
     public func performAction(
-        action: MfaActionAction.Name,
+        action: ActionName,
         options: PerformActionOptions?
     ) async throws -> MFASessionResult {
         let opts = LoginIDMFA.PerformActionOptions(
@@ -152,7 +138,7 @@ final public class LoginID: Sendable {
        ```
      */
     public func performAction(
-        action: MfaActionAction.Name,
+        action: ActionName,
     ) async throws -> MFASessionResult {
         return try await self.performAction(
             action: action,

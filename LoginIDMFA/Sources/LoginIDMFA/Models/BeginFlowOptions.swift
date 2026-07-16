@@ -9,8 +9,7 @@ import LoginIDCore
 
 /// Options for beginning Multi-Factor Authentication (MFA).
 public struct BeginFlowOptions {
-    /// A human-palatable name for the user account, intended only for display
-    /// on your passkeys and modals.
+    /// A human-palatable name for the user account, intended only for display on your passkeys and modals.
     public let displayName: String?
     
     /// The type of username validation to be used.
@@ -19,35 +18,17 @@ public struct BeginFlowOptions {
     
     /// A string representing transaction details for confirmation during MFA.
     /// This can be plain text or a JSON-formatted string for structured details.
-    ///
-    /// Example (plain text):
-    /// ```
-    /// Payment of $100 to John Doe
-    /// ```
-    ///
-    /// Example (JSON):
-    /// ```json
-    /// {
-    ///   "transactionId": "12345",
-    ///   "amount": "100.00",
-    ///   "currency": "USD",
-    ///   "recipient": "john.doe@example.com"
-    /// }
-    /// ```
     public let txPayload: String?
     
     /// Merchant-generated identifier for the current checkout session.
-    /// Used as a key to retrieve associated trust information and link the session
-    /// with wallet-issued identity data.
+    /// Used as a key to retrieve associated trust information and link the session with wallet-issued identity data.
     public let merchantTrustId: String?
     
     /// A unique identifier used to trace and correlate all events associated with a single MFA interaction.
     /// If you don’t provide this, the server may generate one automatically.
     public let traceId: String?
     
-    /// An identifier for the device used in the authentication process. This property helps determine if
-    /// supported authentications can be proceeded, allowing future authentications to identify the device
-    /// correctly.
+    /// An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded, allowing future authentications to identify the device correctly.
     ///
     /// Overrides the stored device identifier. If not provided, the SDK uses the stored value.
     public let deviceId: String?
@@ -56,7 +37,7 @@ public struct BeginFlowOptions {
     
     public init(
         displayName: String? = nil,
-        usernameType: UsernameType = UsernameType.other,
+        usernameType: UsernameType = .other,
         txPayload: String? = nil,
         merchantTrustId: String? = nil,
         traceId: String? = nil,
@@ -68,5 +49,17 @@ public struct BeginFlowOptions {
         self.merchantTrustId = merchantTrustId
         self.traceId = traceId
         self.deviceId = deviceId
+    }
+    
+    internal init(
+        txPayload: String,
+        options: BeginFlowOptions?
+    ) {
+        self.displayName = options?.displayName
+        self.usernameType = options?.usernameType ?? .other
+        self.txPayload = txPayload
+        self.merchantTrustId = options?.merchantTrustId
+        self.traceId = options?.traceId
+        self.deviceId = options?.deviceId
     }
 }

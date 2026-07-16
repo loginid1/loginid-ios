@@ -6,7 +6,7 @@
 //
 
 /// The final result after validating the MFA session info
-struct ActionPayload {
+internal struct ActionPayload {
     /// The MFA state session.
     ///
     /// This should be obtained from a previous MFA request or initiation step.

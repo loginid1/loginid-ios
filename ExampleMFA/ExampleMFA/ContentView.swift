@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import LoginIDWalletAuth
+import LoginIDMFA
 
 struct ContentView: View {
     @State private var sessionResult: MFASessionResult? = nil
@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var displayName: String = ""
     @State private var txPayload: String = ""
 
-    private let lid = LoginID(baseUrl: "")
+    private let lid = LoginIDCheckoutMFA(baseUrl: "")
     
     var body: some View {
         VStack {
@@ -51,9 +51,7 @@ struct ContentView: View {
             Button(action: {
                 Task {
                     do {
-                        let result = try await lid.beginFlow(
-                            options: BeginFlowOptions(txPayload: "$100")
-                        )
+                        let result = try await lid.beginFlow(txPayload: "$100")
                         sessionResult = result
                     } catch let err as LoginIDError {
                         print(err.message)

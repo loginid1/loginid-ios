@@ -79,7 +79,7 @@ public struct MFASessionResult: Sendable {
     
     /// The next recommended MFA factor action to take.
     /// Indicates which MFA factor the user should complete next in order to proceed.
-    public let nextAction: MfaActionAction.Name?
+    public let nextAction: ActionName?
     
     /**
      Initializes a new instance using optional `MFAInfo` and `TokenSet` data.
@@ -121,7 +121,7 @@ public struct MFASessionResult: Sendable {
         
         let available: [MfaActionAction.Name] = info?.next?.map { $0.action.name } ?? []
         
-        self.nextAction = available.firstMatch(in: priority)
+        self.nextAction = available.firstMatch(in: priority).map { ActionName(from: $0) }
         
         self.remainingFactors = (info?.next ?? []).map { factor in
             let action = factor.action
@@ -146,7 +146,7 @@ public struct MFASessionResult: Sendable {
             }()
 
             return RemainingAction(
-                type: action.name,
+                type: ActionName(from: action.name),
                 label: action.label,
                 description: action.desc,
                 value: value,

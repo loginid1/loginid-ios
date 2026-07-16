@@ -14,7 +14,7 @@ import Foundation
 /// entire string as Base64URL.
 ///
 /// - Returns: The decoded `Data`, or `nil` if the string is not valid Base64URL.
-extension String {
+internal extension String {
     func decodeJWTOrPayloadSegment() -> Data? {
         let segment: String
         if let candidate = self.split(separator: ".").dropFirst().first {

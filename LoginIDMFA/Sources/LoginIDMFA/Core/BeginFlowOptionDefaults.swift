@@ -10,7 +10,7 @@ import LoginIDCore
 /// Provides defaulted accessors for `BeginFlowOptions`,
 /// falling back to sensible values (such as the provided username)
 /// when options are missing or incomplete.
-final class BeginFlowOptionDefaults {
+internal final class BeginFlowOptionDefaults {
     /// `beginFlow` options sent in by the user.
     private let options: BeginFlowOptions?
     

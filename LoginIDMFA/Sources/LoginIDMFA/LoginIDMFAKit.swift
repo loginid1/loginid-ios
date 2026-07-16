@@ -8,6 +8,8 @@
 import Foundation
 import LoginIDCore
 
+@_exported import LoginIDCore
+
 /// The main entry point for the LoginIDMFAKit package.
 /// Provides access to all SDK functionality, including configuration,
 /// MFA flows, secure session management, and device trust handling.
@@ -127,11 +129,11 @@ final public class LoginIDMFAKit: Sendable {
      - Throws: `LoginIDError` if validation fails, the payload is missing/invalid, or the API call fails.
      */
     public func performAction(
-        action: MfaActionAction.Name,
+        action: ActionName,
         options: PerformActionOptions?,
     ) async throws -> MFASessionResult {
         return try await TaskHandler.executeTask {
-            try await self.mfa.performAction(action: action, options: options)
+            try await self.mfa.performAction(action: action.toCoreAction(), options: options)
         }
     }
 }

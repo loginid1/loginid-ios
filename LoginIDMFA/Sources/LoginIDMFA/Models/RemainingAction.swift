@@ -13,7 +13,7 @@ public struct RemainingAction: Sendable {
     /// The type of the MFA factor, such as passkey or OTP via email or SMS.
     ///
     /// Use this value in `performAction` to initiate the factor.
-    public let type: MfaActionAction.Name
+    public let type: ActionName
     
     /// A user-friendly label for the factor, providing context on how it should be used.
     public let label: String

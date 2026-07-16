@@ -28,7 +28,7 @@ public struct PasskeyInfo: Sendable, Codable, Hashable {
      Initializes `PasskeyInfo` from an auto-generated `AdditionalPasskeyInfo`.
      - Parameter info: The auto-generated info object.
      */
-    init(from info: AdditionalPasskeyInfo) {
+    internal init(from info: AdditionalPasskeyInfo) {
         self.aaguid = info.aaguid
         self.assertionResult = info.assertionResult.map { PasskeyAssertionResponse(from: $0) }
         self.creationResult = info.creationResult.map { PasskeyCreationResult(from: $0) }

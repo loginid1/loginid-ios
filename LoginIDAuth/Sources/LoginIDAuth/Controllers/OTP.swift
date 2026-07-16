@@ -8,7 +8,7 @@
 import LoginIDCore
 
 /// Provides an interface for handling One-Time Password (OTP) flows.
-final class OTP: Sendable {
+internal final class OTP: Sendable {
     private let session: SessionManaging
     private let otpApi: LoginIDOTPAPI
     

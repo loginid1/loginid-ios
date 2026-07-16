@@ -8,7 +8,7 @@
 import LoginIDCore
 
 // A utility structure for locating trust tokens within a Mfa Begin response.
-struct TrustTokenFinder {
+internal struct TrustTokenFinder {
     private static let MERCHANT_TRUST_ID = "merchantTrustID"
     private static let WALLET_TRUST_ID = "walletTrustID"
 

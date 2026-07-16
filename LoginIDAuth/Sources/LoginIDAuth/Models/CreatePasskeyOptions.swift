@@ -15,12 +15,10 @@ public struct CreatePasskeyOptions {
     /// Defaults to `.other` and is omitted from the payload when `.other`.
     public let usernameType: UsernameType
     
-    /// A human-palatable name for the user account, intended only for display
-    /// on your passkeys and modals.
+    /// A human-palatable name for the user account, intended only for display on your passkeys and modals.
     public let displayName: String?
     
-    /// A custom label or nickname when creating a passkey.
-    /// Useful for distinguishing between multiple passkeys.
+    /// A custom label or nickname when creating a passkey. Useful for distinguishing between multiple passkeys.
     public let passkeyName: String?
     
     /// An identifier for the device used when creating a passkey.
@@ -54,7 +52,7 @@ public struct CreatePasskeyOptions {
         self.deviceId = deviceId
     }
     
-    init(
+    internal init(
         authzToken: String? = nil,
         options: CreatePasskeyOptions? = nil,
     ) {
