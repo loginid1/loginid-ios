@@ -12,7 +12,7 @@ final public class LoginIDConfig: Sendable {
     /// The base URL of the LoginID service.
     ///
     /// This value is used to resolve the App ID and make API calls.
-    private let baseUrl: String
+    public let baseUrl: String
 
     /// If true, uses TrustID, a Crypto–derived device identifier, as a device possession factor. Defaults to false.
     public let useTrustId: Bool

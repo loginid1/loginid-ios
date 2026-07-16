@@ -5,12 +5,10 @@
 //  Created by Michael Braga on 2026-07-14.
 //
 
-/**
- A specialized authentication helper built on top of LoginID's MFA flow, designed for checkout scenarios
- where you need both authentication and identity trust.
-
- This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
- */
+/// A specialized authentication helper built on top of LoginID's MFA flow, designed for checkout scenarios
+/// where you need both authentication and identity trust.
+///
+/// This helps orchestrate the MFA flow tied to a transaction (e.g., confirming a purchase) using passkeys.
 final public class LoginIDCheckoutMFA: Sendable {
     private let mfa: LoginIDMFA.LoginIDMFAKit
     
@@ -106,7 +104,7 @@ final public class LoginIDCheckoutMFA: Sendable {
        ```
      */
     public func performAction(
-        action: MfaActionAction.Name,
+        action: ActionName,
         options: PerformActionOptions?
     ) async throws -> MFASessionResult {
         let opts = LoginIDMFA.PerformActionOptions(
@@ -140,7 +138,7 @@ final public class LoginIDCheckoutMFA: Sendable {
        ```
      */
     public func performAction(
-        action: MfaActionAction.Name,
+        action: ActionName,
     ) async throws -> MFASessionResult {
         return try await self.performAction(
             action: action,
