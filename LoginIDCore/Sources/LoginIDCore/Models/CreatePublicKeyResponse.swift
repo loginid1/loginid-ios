@@ -22,6 +22,11 @@ public struct CreatePublicKeyResponse: Sendable {
     
     /// The attestation object generated during credential creation.
     public let attestationObject: String
+    
+    /// The authenticator attachment modality reported for this registration.
+    ///
+    /// `nil` when the platform does not report it (before iOS 16.6).
+    public let authenticatorAttachment: CreationResult.AuthenticatorAttachment?
 
     /**
      Creates a new `CreatePublicKeyResponse` by Base64URL-encoding the provided raw data.
@@ -31,11 +36,19 @@ public struct CreatePublicKeyResponse: Sendable {
        - rawId: The raw credential identifier.
        - clientDataJSON: The client data JSON.
        - attestationObject: The attestation object.
+       - authenticatorAttachment: The authenticator attachment modality, if known.
      */
-    init(id: Data, rawId: Data, clientDataJSON: Data, attestationObject: Data) {
+    init(
+        id: Data,
+        rawId: Data,
+        clientDataJSON: Data,
+        attestationObject: Data,
+        authenticatorAttachment: CreationResult.AuthenticatorAttachment? = nil
+    ) {
         self.id = id.base64URLEncodedString()
         self.rawId = rawId.base64URLEncodedString()
         self.clientDataJSON = clientDataJSON.base64URLEncodedString()
         self.attestationObject = attestationObject.base64URLEncodedString()
+        self.authenticatorAttachment = authenticatorAttachment
     }
 }

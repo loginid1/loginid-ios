@@ -73,6 +73,7 @@ internal final class Passkeys : Sendable {
             let regCompleteRequestBody = RegCompleteRequestBody(
                 creationResult: CreationResult(
                     attestationObject: credential.attestationObject,
+                    authenticatorAttachment: credential.authenticatorAttachment,
                     clientDataJSON: credential.clientDataJSON,
                     credentialId: credential.id
                 ),
