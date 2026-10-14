@@ -139,6 +139,9 @@ final public class LoginIDAuth: Sendable {
      
      A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
      
+     When `options.txPayload` is provided, the payload is embedded in the passkey challenge and signed by the user, confirming the transaction
+     as part of the authentication. The resulting `AuthResult.txId` identifies the confirmed transaction.
+     
      - Parameters:
        - username: The username of the user to authenticate.
        - options: Optional parameters for passkey authentication.

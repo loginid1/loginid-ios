@@ -97,18 +97,25 @@ internal final class Passkeys : Sendable {
         options: AuthenticateWithPasskeyOptions?
     ) async throws -> AuthResult {
         let appId = try config.getAppId()
-        let deviceInfo = await Defaults.deviceInfo(store: deviceStore)
+        let deviceInfo = await Defaults.deviceInfo(store: deviceStore, deviceId: options?.deviceId)
         let trustItems = try Defaults.trustItems(config: config, store: trustId, username: username)
         let user = Defaults.userLogin(
             username: username,
             usernameType: options?.usernameType
         )
+        let tx: TxPayload? =
+            if let txPayload = options?.txPayload, !txPayload.isEmpty {
+                TxPayload(data: txPayload, nonce: options?.txNonce ?? "")
+            } else {
+                nil
+            }
 
         let authInitRequestBody = AuthInitRequestBody(
             app: Application(id: appId),
             deviceInfo: deviceInfo,
             traceId: options?.traceId,
             trustItems: trustItems,
+            tx: tx,
             user: user
         )
 
