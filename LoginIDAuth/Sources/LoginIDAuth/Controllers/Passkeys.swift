@@ -51,6 +51,7 @@ internal final class Passkeys : Sendable {
         let regInitRequestBody = RegInitRequestBody(
             app: Application(id: appId),
             deviceInfo: deviceInfo,
+            traceId: options?.traceId,
             trustItems: trustItems,
             user: user
         )
@@ -105,6 +106,7 @@ internal final class Passkeys : Sendable {
         let authInitRequestBody = AuthInitRequestBody(
             app: Application(id: appId),
             deviceInfo: deviceInfo,
+            traceId: options?.traceId,
             trustItems: trustItems,
             user: user
         )

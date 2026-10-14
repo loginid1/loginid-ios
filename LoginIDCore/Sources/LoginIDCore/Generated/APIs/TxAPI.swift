@@ -16,6 +16,7 @@ open class TxAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: TxComplete
      */
+    @available(*, deprecated, message: "This operation is deprecated.")
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     open class func txTxComplete(txCompleteRequestBody: TxCompleteRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> TxComplete {
         return try await txTxCompleteWithRequestBuilder(txCompleteRequestBody: txCompleteRequestBody, apiConfiguration: apiConfiguration).execute().body
@@ -28,6 +29,7 @@ open class TxAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<TxComplete> 
      */
+    @available(*, deprecated, message: "This operation is deprecated.")
     open class func txTxCompleteWithRequestBuilder(txCompleteRequestBody: TxCompleteRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<TxComplete> {
         let localVariablePath = "/fido2/v2/tx/complete"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath
@@ -53,6 +55,7 @@ open class TxAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: TxInit
      */
+    @available(*, deprecated, message: "This operation is deprecated.")
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     open class func txTxInit(txInitRequestBody: TxInitRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) async throws(ErrorResponse) -> TxInit {
         return try await txTxInitWithRequestBuilder(txInitRequestBody: txInitRequestBody, apiConfiguration: apiConfiguration).execute().body
@@ -65,6 +68,7 @@ open class TxAPI {
      - parameter apiConfiguration: The configuration for the http request.
      - returns: RequestBuilder<TxInit> 
      */
+    @available(*, deprecated, message: "This operation is deprecated.")
     open class func txTxInitWithRequestBuilder(txInitRequestBody: TxInitRequestBody, apiConfiguration: OpenAPIClientAPIConfiguration = OpenAPIClientAPIConfiguration.shared) -> RequestBuilder<TxInit> {
         let localVariablePath = "/fido2/v2/tx/init"
         let localVariableURLString = apiConfiguration.basePath + localVariablePath

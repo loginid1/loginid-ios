@@ -9,6 +9,10 @@ import Foundation
 
 public struct CreationResult: Sendable, Codable, ParameterConvertible, Hashable {
 
+    public enum AuthenticatorAttachment: String, Sendable, Codable, CaseIterable {
+        case platform = "platform"
+        case crossPlatform = "cross-platform"
+    }
     public enum Transports: String, Sendable, Codable, CaseIterable {
         case usb = "usb"
         case nfc = "nfc"
@@ -20,6 +24,8 @@ public struct CreationResult: Sendable, Codable, ParameterConvertible, Hashable 
     }
     /** Base64 encoded byte array containing an attestation object, which is opaque to, and cryptographically protected against tampering by, the client. */
     public var attestationObject: String
+    /** The authenticator attachment modality reported by the client for this registration: \"platform\" if the authenticator is built into the client, or \"cross-platform\" if it is a security key or reachable only via hybrid/QR. */
+    public var authenticatorAttachment: AuthenticatorAttachment?
     /** A base64 encoded authenticator data structure encodes contextual bindings made by the authenticator. */
     public var authenticatorData: String?
     /** Base64 encoded byte array which is a JSON-compatible serialization of client data passed to the authenticator by the client in order to generate this credential. The exact JSON serialization MUST be preserved, as the hash of the serialized client data has been computed over it. */
@@ -32,8 +38,9 @@ public struct CreationResult: Sendable, Codable, ParameterConvertible, Hashable 
     /** These values are the transports that the authenticator is believed to support, or an empty sequence if the information is unavailable. */
     public var transports: [Transports]?
 
-    public init(attestationObject: String, authenticatorData: String? = nil, clientDataJSON: String, credentialId: String, publicKey: String? = nil, publicKeyAlgorithm: Int64? = nil, transports: [Transports]? = nil) {
+    public init(attestationObject: String, authenticatorAttachment: AuthenticatorAttachment? = nil, authenticatorData: String? = nil, clientDataJSON: String, credentialId: String, publicKey: String? = nil, publicKeyAlgorithm: Int64? = nil, transports: [Transports]? = nil) {
         self.attestationObject = attestationObject
+        self.authenticatorAttachment = authenticatorAttachment
         self.authenticatorData = authenticatorData
         self.clientDataJSON = clientDataJSON
         self.credentialId = credentialId
@@ -44,6 +51,7 @@ public struct CreationResult: Sendable, Codable, ParameterConvertible, Hashable 
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case attestationObject
+        case authenticatorAttachment
         case authenticatorData
         case clientDataJSON
         case credentialId
@@ -57,6 +65,7 @@ public struct CreationResult: Sendable, Codable, ParameterConvertible, Hashable 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(attestationObject, forKey: .attestationObject)
+        try container.encodeIfPresent(authenticatorAttachment, forKey: .authenticatorAttachment)
         try container.encodeIfPresent(authenticatorData, forKey: .authenticatorData)
         try container.encode(clientDataJSON, forKey: .clientDataJSON)
         try container.encode(credentialId, forKey: .credentialId)

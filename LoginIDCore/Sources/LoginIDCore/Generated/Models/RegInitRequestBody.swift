@@ -12,14 +12,16 @@ public struct RegInitRequestBody: Sendable, Codable, ParameterConvertible, Hasha
     public var app: Application
     public var deviceInfo: DeviceInfo
     public var passkeyOptions: PasskeyOptions?
+    public var traceId: String?
     /** TrustIDs provided with the request */
     public var trustItems: [String: String]?
     public var user: User?
 
-    public init(app: Application, deviceInfo: DeviceInfo, passkeyOptions: PasskeyOptions? = nil, trustItems: [String: String]? = nil, user: User? = nil) {
+    public init(app: Application, deviceInfo: DeviceInfo, passkeyOptions: PasskeyOptions? = nil, traceId: String? = nil, trustItems: [String: String]? = nil, user: User? = nil) {
         self.app = app
         self.deviceInfo = deviceInfo
         self.passkeyOptions = passkeyOptions
+        self.traceId = traceId
         self.trustItems = trustItems
         self.user = user
     }
@@ -28,6 +30,7 @@ public struct RegInitRequestBody: Sendable, Codable, ParameterConvertible, Hasha
         case app
         case deviceInfo
         case passkeyOptions
+        case traceId
         case trustItems
         case user
     }
@@ -39,6 +42,7 @@ public struct RegInitRequestBody: Sendable, Codable, ParameterConvertible, Hasha
         try container.encode(app, forKey: .app)
         try container.encode(deviceInfo, forKey: .deviceInfo)
         try container.encodeIfPresent(passkeyOptions, forKey: .passkeyOptions)
+        try container.encodeIfPresent(traceId, forKey: .traceId)
         try container.encodeIfPresent(trustItems, forKey: .trustItems)
         try container.encodeIfPresent(user, forKey: .user)
     }
