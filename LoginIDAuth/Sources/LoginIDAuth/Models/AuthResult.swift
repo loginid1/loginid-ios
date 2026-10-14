@@ -51,6 +51,12 @@ public struct AuthResult {
     /// This identifier can be used to determine whether future authentication
     /// methods are supported on the current device.
     public let deviceId: String?
+    
+    /// The unique identifier of the confirmed transaction.
+    ///
+    /// This value is only present when a transaction was successfully confirmed
+    /// with a passkey via the `txPayload` option of `authenticateWithPasskey`.
+    public let txId: String?
 
     internal init(result: JWT) {
         token = result.jwtAccess
@@ -60,6 +66,7 @@ public struct AuthResult {
         userId = result.userId
         passkeyId = result.passkeyId
         deviceId = result.deviceId
+        txId = result.txId
     }
 
     internal init(fallbackOptions: [String]) {
@@ -70,5 +77,6 @@ public struct AuthResult {
         userId = nil
         deviceId = nil
         passkeyId = nil
+        txId = nil
     }
 }
