@@ -170,6 +170,7 @@ internal final class MFA : Sendable {
                     
                     let creationResult = CreationResult(
                         attestationObject: credential.attestationObject,
+                        authenticatorAttachment: credential.authenticatorAttachment,
                         clientDataJSON: credential.clientDataJSON,
                         credentialId: credential.id
                     )

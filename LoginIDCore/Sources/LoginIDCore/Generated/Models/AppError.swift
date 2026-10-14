@@ -14,6 +14,7 @@ public struct AppError: Sendable, Codable, ParameterConvertible, Hashable {
         case unauthorized = "unauthorized"
         case forbidden = "forbidden"
         case notFound = "not_found"
+        case tooManyRequests = "too_many_requests"
         case internalError = "internal_error"
     }
     public var msg: String

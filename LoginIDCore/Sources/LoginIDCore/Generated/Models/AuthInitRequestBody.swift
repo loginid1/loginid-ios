@@ -11,21 +11,27 @@ public struct AuthInitRequestBody: Sendable, Codable, ParameterConvertible, Hash
 
     public var app: Application
     public var deviceInfo: DeviceInfo
+    public var traceId: String?
     /** TrustIDs provided with the request */
     public var trustItems: [String: String]?
+    public var tx: TxPayload?
     public var user: UserLogin?
 
-    public init(app: Application, deviceInfo: DeviceInfo, trustItems: [String: String]? = nil, user: UserLogin? = nil) {
+    public init(app: Application, deviceInfo: DeviceInfo, traceId: String? = nil, trustItems: [String: String]? = nil, tx: TxPayload? = nil, user: UserLogin? = nil) {
         self.app = app
         self.deviceInfo = deviceInfo
+        self.traceId = traceId
         self.trustItems = trustItems
+        self.tx = tx
         self.user = user
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case app
         case deviceInfo
+        case traceId
         case trustItems
+        case tx
         case user
     }
 
@@ -35,7 +41,9 @@ public struct AuthInitRequestBody: Sendable, Codable, ParameterConvertible, Hash
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(app, forKey: .app)
         try container.encode(deviceInfo, forKey: .deviceInfo)
+        try container.encodeIfPresent(traceId, forKey: .traceId)
         try container.encodeIfPresent(trustItems, forKey: .trustItems)
+        try container.encodeIfPresent(tx, forKey: .tx)
         try container.encodeIfPresent(user, forKey: .user)
     }
 }

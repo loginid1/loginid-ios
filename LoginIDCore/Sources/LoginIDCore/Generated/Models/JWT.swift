@@ -9,26 +9,33 @@ import Foundation
 
 public struct JWT: Sendable, Codable, ParameterConvertible, Hashable {
 
+    public var authCred: Passkey?
     /** Device ID */
-    public var deviceId: String?
+    public var deviceId: String
     /** JWT access token */
     public var jwtAccess: String
     /** Passkey ID */
-    public var passkeyId: String?
+    public var passkeyId: String
+    /** Transaction ID */
+    public var txId: String?
     /** User ID */
     public var userId: String
 
-    public init(deviceId: String? = nil, jwtAccess: String, passkeyId: String? = nil, userId: String) {
+    public init(authCred: Passkey? = nil, deviceId: String, jwtAccess: String, passkeyId: String, txId: String? = nil, userId: String) {
+        self.authCred = authCred
         self.deviceId = deviceId
         self.jwtAccess = jwtAccess
         self.passkeyId = passkeyId
+        self.txId = txId
         self.userId = userId
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case authCred
         case deviceId
         case jwtAccess
         case passkeyId
+        case txId
         case userId
     }
 
@@ -36,9 +43,11 @@ public struct JWT: Sendable, Codable, ParameterConvertible, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(deviceId, forKey: .deviceId)
+        try container.encodeIfPresent(authCred, forKey: .authCred)
+        try container.encode(deviceId, forKey: .deviceId)
         try container.encode(jwtAccess, forKey: .jwtAccess)
-        try container.encodeIfPresent(passkeyId, forKey: .passkeyId)
+        try container.encode(passkeyId, forKey: .passkeyId)
+        try container.encodeIfPresent(txId, forKey: .txId)
         try container.encode(userId, forKey: .userId)
     }
 }

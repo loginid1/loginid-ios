@@ -12,6 +12,9 @@ public struct PasskeyCreationResult: Sendable, Codable, Hashable {
     /// Base64URL-encoded attestation object bytes.
     public let attestationObject: String
     
+    /// The authenticator attachment modality: `"platform"` or `"cross-platform"`.
+    public let authenticatorAttachment: String?
+    
     /// Base64URL-encoded authenticator data bytes.
     public let authenticatorData: String?
     
@@ -36,6 +39,7 @@ public struct PasskeyCreationResult: Sendable, Codable, Hashable {
      */
     internal init(from result: CreationResult) {
         self.attestationObject = result.attestationObject
+        self.authenticatorAttachment = result.authenticatorAttachment?.rawValue
         self.authenticatorData = result.authenticatorData
         self.clientDataJSON = result.clientDataJSON
         self.credentialId = result.credentialId

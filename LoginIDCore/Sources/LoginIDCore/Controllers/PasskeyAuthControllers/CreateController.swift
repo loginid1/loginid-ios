@@ -94,12 +94,37 @@ public class CreateController: NSObject, ASAuthorizationControllerDelegate,
                 id: credential.credentialID,
                 rawId: credential.credentialID,
                 clientDataJSON: credential.rawClientDataJSON,
-                attestationObject: credential.rawAttestationObject!
+                attestationObject: credential.rawAttestationObject!,
+                authenticatorAttachment: authenticatorAttachment(of: credential)
             )
             createContinuation?.resume(returning: response)
         default:
             let error = LoginIDError(msgCode: "invalid_response", msg: "Invalid create credential")
             createContinuation?.resume(throwing: error)
+        }
+    }
+
+    /**
+     Maps the attachment reported by the platform to the API's attachment modality.
+     
+     - Parameter credential: The registration credential returned by the authorization controller.
+     - Returns: The attachment modality, or `nil` if it is not available on this OS version.
+     */
+    private func authenticatorAttachment(
+        of credential: ASAuthorizationPublicKeyCredentialRegistration
+    ) -> CreationResult.AuthenticatorAttachment? {
+        guard #available(iOS 16.6, *),
+              let credential = credential as? ASAuthorizationPlatformPublicKeyCredentialRegistration else {
+            return nil
+        }
+
+        switch credential.attachment {
+        case .platform:
+            return .platform
+        case .crossPlatform:
+            return .crossPlatform
+        @unknown default:
+            return nil
         }
     }
 
