@@ -42,10 +42,12 @@ internal final class Passkeys : Sendable {
         let appId = try config.getAppId()
         let deviceInfo = await Defaults.deviceInfo(store: deviceStore, deviceId: options?.deviceId)
         let trustItems = try Defaults.trustItems(config: config, store: trustId, username: username)
+        let overrideDeviceDisplayName = options?.overrideDeviceDisplayName
         let user = Defaults.user(
             displayName: options?.displayName,
             username: username,
-            usernameType: options?.usernameType
+            usernameType: options?.usernameType,
+            overrideDeviceDisplayName: overrideDeviceDisplayName
         )
         
         let regInitRequestBody = RegInitRequestBody(
@@ -64,6 +66,7 @@ internal final class Passkeys : Sendable {
             userAgent: customUserAgent,
             authorization: authzToken
         )
+        .applyingOverrides(deviceDisplayName: overrideDeviceDisplayName)
         
         return try await invokePasskeyApi(session: initRes.session) {
             let credential = try await credentials.create(

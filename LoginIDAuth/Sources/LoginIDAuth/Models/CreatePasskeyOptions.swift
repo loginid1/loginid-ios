@@ -18,6 +18,10 @@ public struct CreatePasskeyOptions {
     /// A human-palatable name for the user account, intended only for display on your passkeys and modals.
     public let displayName: String?
     
+    /// Overrides the username and display name shown by the authenticator during passkey creation.
+    /// When set, `displayName` is ignored and this value is used instead.
+    public let overrideDeviceDisplayName: String?
+    
     /// A custom label or nickname when creating a passkey. Useful for distinguishing between multiple passkeys.
     public let passkeyName: String?
     
@@ -40,6 +44,7 @@ public struct CreatePasskeyOptions {
     ///   - authzToken: An optional authorization token used for accessing protected resources.
     ///   - usernameType: The type of username validation to use. Defaults to `.other`, which is omitted from the request payload.
     ///   - displayName: An optional human-readable name for the user account, displayed in passkeys and authentication prompts.
+    ///   - overrideDeviceDisplayName: An optional value that overrides the username and display name shown by the authenticator during passkey creation. When set, `displayName` is ignored.
     ///   - passkeyName: An optional custom label or nickname for the passkey, useful for distinguishing between multiple passkeys.
     ///   - deviceId: An optional identifier for the device creating the passkey. Used to enable device-specific authentication flows and identify the device during future authentications.
     ///   - traceId: An optional identifier used to trace and correlate all events associated with this registration interaction.
@@ -47,6 +52,7 @@ public struct CreatePasskeyOptions {
         authzToken: String? = nil,
         usernameType: UsernameType = .other,
         displayName: String? = nil,
+        overrideDeviceDisplayName: String? = nil,
         passkeyName: String? = nil,
         deviceId: String? = nil,
         traceId: String? = nil
@@ -54,6 +60,7 @@ public struct CreatePasskeyOptions {
         self.authzToken = authzToken
         self.usernameType = usernameType
         self.displayName = displayName
+        self.overrideDeviceDisplayName = overrideDeviceDisplayName
         self.passkeyName = passkeyName
         self.deviceId = deviceId
         self.traceId = traceId
@@ -66,6 +73,7 @@ public struct CreatePasskeyOptions {
         self.authzToken = authzToken
         self.usernameType = options?.usernameType ?? .other
         self.displayName = options?.displayName
+        self.overrideDeviceDisplayName = options?.overrideDeviceDisplayName
         self.passkeyName = options?.passkeyName
         self.deviceId = options?.deviceId
         self.traceId = options?.traceId
