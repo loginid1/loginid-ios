@@ -29,13 +29,18 @@ public enum Defaults {
     }
     
     /// A `User` object constructed from the current values.
+    ///
+    /// `displayName` is omitted when `overrideDeviceDisplayName` is non-empty.
     public static func user(
         displayName: String?,
         username: String?,
-        usernameType: UsernameType?
+        usernameType: UsernameType?,
+        overrideDeviceDisplayName: String? = nil
     ) -> User {
         return User(
-            displayName: Defaults.displayName(displayName, username: username ?? ""),
+            displayName: overrideDeviceDisplayName?.isEmpty == false
+                ? nil
+                : Defaults.displayName(displayName, username: username ?? ""),
             username: username ?? "",
             usernameType: Defaults.usernameType(usernameType)
         )
